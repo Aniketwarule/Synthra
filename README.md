@@ -3,10 +3,6 @@
 
 <div align="center">
 
-[![Hackathon](https://img.shields.io/badge/🏆_Hackathon-Ignition_Hackverse_PVG_COET-FF6B35?style=for-the-badge)](/)
-[![PS](https://img.shields.io/badge/🆔_Problem_Statement-PS0306-4A90D9?style=for-the-badge)](/)
-[![Team](https://img.shields.io/badge/👨‍💻_Team-Crazy8-9B59B6?style=for-the-badge)](/)
-
 [![React](https://img.shields.io/badge/React-20232A?style=flat-square&logo=react&logoColor=61DAFB)](/)
 [![Node.js](https://img.shields.io/badge/Node.js-339933?style=flat-square&logo=nodedotjs&logoColor=white)](/)
 [![Algorand](https://img.shields.io/badge/Algorand-000000?style=flat-square&logo=algorand&logoColor=white)](/)
@@ -179,27 +175,6 @@ NOW ─────────────────────────�
 
 ---
 
-## ⚡ Quick Start
-
-```bash
-# Clone repo
-git clone https://github.com/your-repo/pay-as-per-use-ai.git
-
-# Install & run backend
-cd backend
-npm install
-npm start
-
-# Install & run frontend
-cd ../frontend
-npm install
-npm run dev
-```
-
-> Open `http://localhost:5173`, connect your Algorand wallet, and fire your first paid prompt.
-
----
-
 ## 🧠 Innovation Summary
 
 | Feature | Impact |
@@ -211,39 +186,12 @@ npm run dev
 
 ---
 
-## 👨‍💻 Team Crazy8
-
-> **Builders of the AI Financial Layer**
-
-| | |
-|---|---|
-| 🏆 Event | Ignition Hackverse PVG COET |
-| 🆔 Problem Statement | PS0306 |
-| 📅 Date | April 04, 2026 |
-
----
-
-## 🏆 Hackathon Note
-
-This project was built under hackathon constraints with a focus on:
-
-- ⚡ Innovation
-- ⚡ Practical feasibility
-- ⚡ Real-world impact
-
----
-
 ## 📜 License
 
 MIT License — open source, free to use and extend post-hackathon.
 
 ---
 
-## 🙌 Acknowledgment
-
-Thanks to **Ignition Hackverse PVG COET** for enabling innovation at scale 🚀
-
----
 
 <div align="center">
 
