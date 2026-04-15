@@ -1,4 +1,4 @@
-# 🚀 Pay-As-You-Go AI API Platform
+# 🚀 Synthra - Pay-As-You-Go AI API Platform
 ### ⚡ Enabling Autonomous AI Commerce with Sub-Cent Micropayments on Algorand
 
 <div align="center">
