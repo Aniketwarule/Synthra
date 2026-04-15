@@ -7,9 +7,10 @@ export function getAlgodConfigFromViteEnvironment(): AlgoViteClientConfig {
 
   return {
     server: import.meta.env.VITE_ALGOD_SERVER,
-    port: import.meta.env.VITE_ALGOD_PORT,
-    token: import.meta.env.VITE_ALGOD_TOKEN,
-    network: import.meta.env.VITE_ALGOD_NETWORK,
+    // Public nodes often require an empty token; missing env vars become undefined at runtime.
+    port: import.meta.env.VITE_ALGOD_PORT || '',
+    token: import.meta.env.VITE_ALGOD_TOKEN || '',
+    network: (import.meta.env.VITE_ALGOD_NETWORK || 'testnet').toLowerCase(),
   }
 }
 
@@ -20,9 +21,9 @@ export function getIndexerConfigFromViteEnvironment(): AlgoViteClientConfig {
 
   return {
     server: import.meta.env.VITE_INDEXER_SERVER,
-    port: import.meta.env.VITE_INDEXER_PORT,
-    token: import.meta.env.VITE_INDEXER_TOKEN,
-    network: import.meta.env.VITE_ALGOD_NETWORK,
+    port: import.meta.env.VITE_INDEXER_PORT || '',
+    token: import.meta.env.VITE_INDEXER_TOKEN || '',
+    network: (import.meta.env.VITE_ALGOD_NETWORK || 'testnet').toLowerCase(),
   }
 }
 
@@ -33,9 +34,9 @@ export function getKmdConfigFromViteEnvironment(): AlgoViteKMDConfig {
 
   return {
     server: import.meta.env.VITE_KMD_SERVER,
-    port: import.meta.env.VITE_KMD_PORT,
-    token: import.meta.env.VITE_KMD_TOKEN,
-    wallet: import.meta.env.VITE_KMD_WALLET,
-    password: import.meta.env.VITE_KMD_PASSWORD,
+    port: import.meta.env.VITE_KMD_PORT || '',
+    token: import.meta.env.VITE_KMD_TOKEN || '',
+    wallet: import.meta.env.VITE_KMD_WALLET || '',
+    password: import.meta.env.VITE_KMD_PASSWORD || '',
   }
 }

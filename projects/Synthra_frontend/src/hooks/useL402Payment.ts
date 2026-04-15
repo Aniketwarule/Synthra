@@ -202,7 +202,7 @@ export function useL402Payment() {
       try {
         const algodConfig = getAlgodConfigFromViteEnvironment()
         const algodClient = new algosdk.Algodv2(
-          algodConfig.token as string,
+          String(algodConfig.token ?? ''),
           algodConfig.server,
           algodConfig.port,
         )

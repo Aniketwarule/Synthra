@@ -63,7 +63,7 @@ interface PeraWalletState {
 
 function createWalletManager(): WalletManager {
   const cfg = getAlgodConfigFromViteEnvironment()
-  const networkId = (import.meta.env.VITE_ALGOD_NETWORK || 'localnet').toLowerCase()
+  const networkId = (cfg.network || 'testnet').toLowerCase()
 
   const wallets: SupportedWallet[] = [
     WalletId.PERA,
@@ -80,7 +80,7 @@ function createWalletManager(): WalletManager {
     networks: {
       [networkId]: {
         algod: {
-          token: cfg.token as string,
+          token: String(cfg.token ?? ''),
           baseServer: cfg.server,
           port: cfg.port,
         },
@@ -108,7 +108,7 @@ function PeraWalletStateProvider({ children }: { children: ReactNode }) {
 
   const getAlgodClient = useCallback(() => {
     const cfg = getAlgodConfigFromViteEnvironment()
-    return new algosdk.Algodv2(cfg.token as string, cfg.server, cfg.port)
+    return new algosdk.Algodv2(String(cfg.token ?? ''), cfg.server, cfg.port)
   }, [])
 
   const fetchBalance = useCallback(
