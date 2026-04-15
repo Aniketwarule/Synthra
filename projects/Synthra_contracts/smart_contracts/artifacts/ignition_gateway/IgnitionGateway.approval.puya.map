@@ -1,0 +1,1004 @@
+{
+  "version": 3,
+  "sources": [
+    "../../ignition_gateway/IgnitionGateway.algo.ts"
+  ],
+  "mappings": ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;AAYA;;AAAA;AAAA;AAAA;;AAAA;;;AAAA;;;;;;;;;;;;;;;;;;;;;;AAAA;;;AAAA;;;;;;;;;;AAAA;AAAA;;;;;;AAAA;;;AAAA;;;;AAAA;AACoB;AAMa;;AAA7B;AALY;AAMoB;;;;AAAhC;AALS;AAMoB;;;;AAA7B;AALY;;AAMoB;;;;AAAhC;AAJF;AAAA;AAYA;;AAAA;AAAA;AAAA;AAAA;;AAAA;AAAA;AAAA;AACqC;AAjBvB;AAiBuB;AAAA;AAAnC;;;AAEI;AAAJ;AAHF;AAAA;AAMA;;AAAA;AAAA;AAAA;AAAA;;AAAA;AAAA;AAAA;AACqC;AAvBvB;AAuBuB;AAAA;AAAnC;;;AAEI;AAAJ;AAHF;AAAA;AAMA;;AAAA;AAAA;AAAA;AAAA;;AAAA;AAAA;AAAA;AACqC;AA5B1B;AA4B0B;AAAA;AAAnC;;;AAEI;AAAJ;AAHF;AAAA;AAMA;;AAAA;AAAA;AAAA;AAAA;;AAAA;AAAA;AAAA;AACqC;AAjCvB;;AAiCuB;AAAA;AAAnC;;;AAEI;AAAJ;AAHF;AAAA;AAvBA;;;AACS;;AAAA;;AAAoB;AAbX;AAaW;AAAA;AAApB;AAAP;AACO;;AAAA;;AAAA;;AAAA;AAAP;",
+  "op_pc_offset": 0,
+  "pc_events": {
+    "1": {
+      "subroutine": "@algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram",
+      "params": {},
+      "block": "main",
+      "stack_in": [],
+      "op": "intcblock 1 0"
+    },
+    "5": {
+      "op": "bytecblock \"PAID_BASE_MODEL\" \"gemini_price\" \"treasury_address\" \"gpt_price\" \"claude_price\""
+    },
+    "76": {
+      "op": "txn OnCompletion",
+      "defined_out": [
+        "tmp%0#1"
+      ],
+      "stack_out": [
+        "tmp%0#1"
+      ]
+    },
+    "78": {
+      "op": "!",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "79": {
+      "error": "OnCompletion must be NoOp",
+      "op": "assert // OnCompletion must be NoOp",
+      "stack_out": []
+    },
+    "80": {
+      "op": "txn ApplicationID",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "82": {
+      "op": "bz main_create_NoOp@8",
+      "stack_out": []
+    },
+    "85": {
+      "op": "pushbytess 0xb994d42c 0xcb46604b 0x28ebb343 0x7f46a494 // method \"payForAi(pay)void\", method \"payForGemini(pay)void\", method \"payForGpt4o(pay)void\", method \"payForClaudeOpus(pay)void\"",
+      "defined_out": [
+        "Method(payForAi(pay)void)",
+        "Method(payForClaudeOpus(pay)void)",
+        "Method(payForGemini(pay)void)",
+        "Method(payForGpt4o(pay)void)"
+      ],
+      "stack_out": [
+        "Method(payForAi(pay)void)",
+        "Method(payForGemini(pay)void)",
+        "Method(payForGpt4o(pay)void)",
+        "Method(payForClaudeOpus(pay)void)"
+      ]
+    },
+    "107": {
+      "op": "txna ApplicationArgs 0",
+      "defined_out": [
+        "Method(payForAi(pay)void)",
+        "Method(payForClaudeOpus(pay)void)",
+        "Method(payForGemini(pay)void)",
+        "Method(payForGpt4o(pay)void)",
+        "tmp%4#0"
+      ],
+      "stack_out": [
+        "Method(payForAi(pay)void)",
+        "Method(payForGemini(pay)void)",
+        "Method(payForGpt4o(pay)void)",
+        "Method(payForClaudeOpus(pay)void)",
+        "tmp%4#0"
+      ]
+    },
+    "110": {
+      "op": "match payForAi payForGemini payForGpt4o payForClaudeOpus",
+      "stack_out": []
+    },
+    "120": {
+      "op": "err"
+    },
+    "121": {
+      "block": "main_create_NoOp@8",
+      "stack_in": [],
+      "op": "pushbytes 0xb8447b36 // method \"createApplication()void\"",
+      "defined_out": [
+        "Method(createApplication()void)"
+      ],
+      "stack_out": [
+        "Method(createApplication()void)"
+      ]
+    },
+    "127": {
+      "op": "txna ApplicationArgs 0",
+      "defined_out": [
+        "Method(createApplication()void)",
+        "tmp%5#0"
+      ],
+      "stack_out": [
+        "Method(createApplication()void)",
+        "tmp%5#0"
+      ]
+    },
+    "130": {
+      "op": "match createApplication",
+      "stack_out": []
+    },
+    "134": {
+      "op": "err"
+    },
+    "135": {
+      "subroutine": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.createApplication[routing]",
+      "params": {},
+      "block": "createApplication",
+      "stack_in": [],
+      "op": "bytec_2 // \"treasury_address\"",
+      "defined_out": [
+        "\"treasury_address\""
+      ],
+      "stack_out": [
+        "\"treasury_address\""
+      ]
+    },
+    "136": {
+      "op": "txn Sender",
+      "defined_out": [
+        "\"treasury_address\"",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "\"treasury_address\"",
+        "tmp%0#0"
+      ]
+    },
+    "138": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "139": {
+      "op": "bytec_1 // \"gemini_price\"",
+      "defined_out": [
+        "\"gemini_price\""
+      ],
+      "stack_out": [
+        "\"gemini_price\""
+      ]
+    },
+    "140": {
+      "op": "pushint 100000 // 100000",
+      "defined_out": [
+        "\"gemini_price\"",
+        "100000"
+      ],
+      "stack_out": [
+        "\"gemini_price\"",
+        "100000"
+      ]
+    },
+    "144": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "145": {
+      "op": "bytec_3 // \"gpt_price\"",
+      "defined_out": [
+        "\"gpt_price\""
+      ],
+      "stack_out": [
+        "\"gpt_price\""
+      ]
+    },
+    "146": {
+      "op": "pushint 500000 // 500000",
+      "defined_out": [
+        "\"gpt_price\"",
+        "500000"
+      ],
+      "stack_out": [
+        "\"gpt_price\"",
+        "500000"
+      ]
+    },
+    "150": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "151": {
+      "op": "bytec 4 // \"claude_price\"",
+      "defined_out": [
+        "\"claude_price\""
+      ],
+      "stack_out": [
+        "\"claude_price\""
+      ]
+    },
+    "153": {
+      "op": "pushint 800000 // 800000",
+      "defined_out": [
+        "\"claude_price\"",
+        "800000"
+      ],
+      "stack_out": [
+        "\"claude_price\"",
+        "800000"
+      ]
+    },
+    "157": {
+      "op": "app_global_put",
+      "stack_out": []
+    },
+    "158": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1"
+      ],
+      "stack_out": [
+        "1"
+      ]
+    },
+    "159": {
+      "op": "return",
+      "stack_out": []
+    },
+    "160": {
+      "subroutine": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.payForAi[routing]",
+      "params": {},
+      "block": "payForAi",
+      "stack_in": [],
+      "op": "txn GroupIndex",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "162": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "1"
+      ]
+    },
+    "163": {
+      "op": "-",
+      "defined_out": [
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0"
+      ]
+    },
+    "164": {
+      "op": "dup",
+      "defined_out": [
+        "payTxn#0",
+        "payTxn#0 (copy)"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "payTxn#0 (copy)"
+      ]
+    },
+    "165": {
+      "op": "gtxns TypeEnum",
+      "defined_out": [
+        "gtxn_type%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type%0#0"
+      ]
+    },
+    "167": {
+      "op": "intc_0 // pay",
+      "defined_out": [
+        "gtxn_type%0#0",
+        "pay",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type%0#0",
+        "pay"
+      ]
+    },
+    "168": {
+      "op": "==",
+      "defined_out": [
+        "gtxn_type_matches%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type_matches%0#0"
+      ]
+    },
+    "169": {
+      "error": "transaction type is pay",
+      "op": "assert // transaction type is pay",
+      "stack_out": [
+        "payTxn#0"
+      ]
+    },
+    "170": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "0"
+      ]
+    },
+    "171": {
+      "op": "bytec_1 // \"gemini_price\"",
+      "defined_out": [
+        "\"gemini_price\"",
+        "0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "0",
+        "\"gemini_price\""
+      ]
+    },
+    "172": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "173": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "payTxn#0",
+        "maybe_value%0#0"
+      ]
+    },
+    "174": {
+      "callsub": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.assertTreasuryPayment",
+      "op": "callsub assertTreasuryPayment",
+      "stack_out": []
+    },
+    "177": {
+      "op": "bytec_0 // \"PAID_BASE_MODEL\"",
+      "defined_out": [
+        "\"PAID_BASE_MODEL\""
+      ],
+      "stack_out": [
+        "\"PAID_BASE_MODEL\""
+      ]
+    },
+    "178": {
+      "op": "log",
+      "stack_out": []
+    },
+    "179": {
+      "op": "intc_0 // 1",
+      "stack_out": [
+        "1"
+      ]
+    },
+    "180": {
+      "op": "return",
+      "stack_out": []
+    },
+    "181": {
+      "subroutine": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.payForGemini[routing]",
+      "params": {},
+      "block": "payForGemini",
+      "stack_in": [],
+      "op": "txn GroupIndex",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "183": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "1"
+      ]
+    },
+    "184": {
+      "op": "-",
+      "defined_out": [
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0"
+      ]
+    },
+    "185": {
+      "op": "dup",
+      "defined_out": [
+        "payTxn#0",
+        "payTxn#0 (copy)"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "payTxn#0 (copy)"
+      ]
+    },
+    "186": {
+      "op": "gtxns TypeEnum",
+      "defined_out": [
+        "gtxn_type%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type%0#0"
+      ]
+    },
+    "188": {
+      "op": "intc_0 // pay",
+      "defined_out": [
+        "gtxn_type%0#0",
+        "pay",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type%0#0",
+        "pay"
+      ]
+    },
+    "189": {
+      "op": "==",
+      "defined_out": [
+        "gtxn_type_matches%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type_matches%0#0"
+      ]
+    },
+    "190": {
+      "error": "transaction type is pay",
+      "op": "assert // transaction type is pay",
+      "stack_out": [
+        "payTxn#0"
+      ]
+    },
+    "191": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "0"
+      ]
+    },
+    "192": {
+      "op": "bytec_1 // \"gemini_price\"",
+      "defined_out": [
+        "\"gemini_price\"",
+        "0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "0",
+        "\"gemini_price\""
+      ]
+    },
+    "193": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "194": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "payTxn#0",
+        "maybe_value%0#0"
+      ]
+    },
+    "195": {
+      "callsub": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.assertTreasuryPayment",
+      "op": "callsub assertTreasuryPayment",
+      "stack_out": []
+    },
+    "198": {
+      "op": "bytec_0 // \"PAID_BASE_MODEL\"",
+      "defined_out": [
+        "\"PAID_BASE_MODEL\""
+      ],
+      "stack_out": [
+        "\"PAID_BASE_MODEL\""
+      ]
+    },
+    "199": {
+      "op": "log",
+      "stack_out": []
+    },
+    "200": {
+      "op": "intc_0 // 1",
+      "stack_out": [
+        "1"
+      ]
+    },
+    "201": {
+      "op": "return",
+      "stack_out": []
+    },
+    "202": {
+      "subroutine": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.payForGpt4o[routing]",
+      "params": {},
+      "block": "payForGpt4o",
+      "stack_in": [],
+      "op": "txn GroupIndex",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "204": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "1"
+      ]
+    },
+    "205": {
+      "op": "-",
+      "defined_out": [
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0"
+      ]
+    },
+    "206": {
+      "op": "dup",
+      "defined_out": [
+        "payTxn#0",
+        "payTxn#0 (copy)"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "payTxn#0 (copy)"
+      ]
+    },
+    "207": {
+      "op": "gtxns TypeEnum",
+      "defined_out": [
+        "gtxn_type%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type%0#0"
+      ]
+    },
+    "209": {
+      "op": "intc_0 // pay",
+      "defined_out": [
+        "gtxn_type%0#0",
+        "pay",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type%0#0",
+        "pay"
+      ]
+    },
+    "210": {
+      "op": "==",
+      "defined_out": [
+        "gtxn_type_matches%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type_matches%0#0"
+      ]
+    },
+    "211": {
+      "error": "transaction type is pay",
+      "op": "assert // transaction type is pay",
+      "stack_out": [
+        "payTxn#0"
+      ]
+    },
+    "212": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "0"
+      ]
+    },
+    "213": {
+      "op": "bytec_3 // \"gpt_price\"",
+      "defined_out": [
+        "\"gpt_price\"",
+        "0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "0",
+        "\"gpt_price\""
+      ]
+    },
+    "214": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "215": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "payTxn#0",
+        "maybe_value%0#0"
+      ]
+    },
+    "216": {
+      "callsub": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.assertTreasuryPayment",
+      "op": "callsub assertTreasuryPayment",
+      "stack_out": []
+    },
+    "219": {
+      "op": "bytec_0 // \"PAID_BASE_MODEL\"",
+      "defined_out": [
+        "\"PAID_BASE_MODEL\""
+      ],
+      "stack_out": [
+        "\"PAID_BASE_MODEL\""
+      ]
+    },
+    "220": {
+      "op": "log",
+      "stack_out": []
+    },
+    "221": {
+      "op": "intc_0 // 1",
+      "stack_out": [
+        "1"
+      ]
+    },
+    "222": {
+      "op": "return",
+      "stack_out": []
+    },
+    "223": {
+      "subroutine": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.payForClaudeOpus[routing]",
+      "params": {},
+      "block": "payForClaudeOpus",
+      "stack_in": [],
+      "op": "txn GroupIndex",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "225": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "1"
+      ]
+    },
+    "226": {
+      "op": "-",
+      "defined_out": [
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0"
+      ]
+    },
+    "227": {
+      "op": "dup",
+      "defined_out": [
+        "payTxn#0",
+        "payTxn#0 (copy)"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "payTxn#0 (copy)"
+      ]
+    },
+    "228": {
+      "op": "gtxns TypeEnum",
+      "defined_out": [
+        "gtxn_type%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type%0#0"
+      ]
+    },
+    "230": {
+      "op": "intc_0 // pay",
+      "defined_out": [
+        "gtxn_type%0#0",
+        "pay",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type%0#0",
+        "pay"
+      ]
+    },
+    "231": {
+      "op": "==",
+      "defined_out": [
+        "gtxn_type_matches%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "gtxn_type_matches%0#0"
+      ]
+    },
+    "232": {
+      "error": "transaction type is pay",
+      "op": "assert // transaction type is pay",
+      "stack_out": [
+        "payTxn#0"
+      ]
+    },
+    "233": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "0"
+      ]
+    },
+    "234": {
+      "op": "bytec 4 // \"claude_price\"",
+      "defined_out": [
+        "\"claude_price\"",
+        "0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "0",
+        "\"claude_price\""
+      ]
+    },
+    "236": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0",
+        "payTxn#0"
+      ],
+      "stack_out": [
+        "payTxn#0",
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "237": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "payTxn#0",
+        "maybe_value%0#0"
+      ]
+    },
+    "238": {
+      "callsub": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.assertTreasuryPayment",
+      "op": "callsub assertTreasuryPayment",
+      "stack_out": []
+    },
+    "241": {
+      "op": "bytec_0 // \"PAID_BASE_MODEL\"",
+      "defined_out": [
+        "\"PAID_BASE_MODEL\""
+      ],
+      "stack_out": [
+        "\"PAID_BASE_MODEL\""
+      ]
+    },
+    "242": {
+      "op": "log",
+      "stack_out": []
+    },
+    "243": {
+      "op": "intc_0 // 1",
+      "stack_out": [
+        "1"
+      ]
+    },
+    "244": {
+      "op": "return",
+      "stack_out": []
+    },
+    "245": {
+      "subroutine": "smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.assertTreasuryPayment",
+      "params": {
+        "payTxn#0": "uint64",
+        "expectedAmount#0": "uint64"
+      },
+      "block": "assertTreasuryPayment",
+      "stack_in": [],
+      "op": "proto 2 0"
+    },
+    "248": {
+      "op": "frame_dig -2",
+      "defined_out": [
+        "payTxn#0 (copy)"
+      ],
+      "stack_out": [
+        "payTxn#0 (copy)"
+      ]
+    },
+    "250": {
+      "op": "gtxns Receiver",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0"
+      ]
+    },
+    "252": {
+      "op": "intc_1 // 0",
+      "defined_out": [
+        "0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "0"
+      ]
+    },
+    "253": {
+      "op": "bytec_2 // \"treasury_address\"",
+      "defined_out": [
+        "\"treasury_address\"",
+        "0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "0",
+        "\"treasury_address\""
+      ]
+    },
+    "254": {
+      "op": "app_global_get_ex",
+      "defined_out": [
+        "maybe_exists%0#0",
+        "maybe_value%0#0",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "tmp%0#0",
+        "maybe_value%0#0",
+        "maybe_exists%0#0"
+      ]
+    },
+    "255": {
+      "error": "check GlobalState exists",
+      "op": "assert // check GlobalState exists",
+      "stack_out": [
+        "tmp%0#0",
+        "maybe_value%0#0"
+      ]
+    },
+    "256": {
+      "op": "==",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "tmp%1#0"
+      ]
+    },
+    "257": {
+      "error": "Invalid treasury receiver",
+      "op": "assert // Invalid treasury receiver",
+      "stack_out": []
+    },
+    "258": {
+      "op": "frame_dig -2",
+      "stack_out": [
+        "payTxn#0 (copy)"
+      ]
+    },
+    "260": {
+      "op": "gtxns Amount",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0"
+      ]
+    },
+    "262": {
+      "op": "frame_dig -1",
+      "defined_out": [
+        "expectedAmount#0 (copy)",
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "tmp%2#0",
+        "expectedAmount#0 (copy)"
+      ]
+    },
+    "264": {
+      "op": "==",
+      "defined_out": [
+        "tmp%3#0"
+      ],
+      "stack_out": [
+        "tmp%3#0"
+      ]
+    },
+    "265": {
+      "error": "Payment amount mismatch",
+      "op": "assert // Payment amount mismatch",
+      "stack_out": []
+    },
+    "266": {
+      "retsub": true,
+      "op": "retsub"
+    }
+  }
+}

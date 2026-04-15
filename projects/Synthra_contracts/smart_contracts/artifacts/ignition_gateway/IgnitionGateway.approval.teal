@@ -1,0 +1,223 @@
+#pragma version 11
+#pragma typetrack false
+
+// @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
+main:
+    intcblock 1 0
+    bytecblock "PAID_BASE_MODEL" "gemini_price" "treasury_address" "gpt_price" "claude_price"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:13
+    // export class IgnitionGateway extends Contract {
+    txn OnCompletion
+    !
+    assert // OnCompletion must be NoOp
+    txn ApplicationID
+    bz main_create_NoOp@8
+    pushbytess 0xb994d42c 0xcb46604b 0x28ebb343 0x7f46a494 // method "payForAi(pay)void", method "payForGemini(pay)void", method "payForGpt4o(pay)void", method "payForClaudeOpus(pay)void"
+    txna ApplicationArgs 0
+    match payForAi payForGemini payForGpt4o payForClaudeOpus
+    err
+
+main_create_NoOp@8:
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:13
+    // export class IgnitionGateway extends Contract {
+    pushbytes 0xb8447b36 // method "createApplication()void"
+    txna ApplicationArgs 0
+    match createApplication
+    err
+
+
+// smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.createApplication[routing]() -> void:
+createApplication:
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:14
+    // treasuryAddress = GlobalState<Account>({ key: 'treasury_address' })
+    bytec_2 // "treasury_address"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:20
+    // this.treasuryAddress.value = Txn.sender
+    txn Sender
+    app_global_put
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:15
+    // geminiPrice = GlobalState<uint64>({ key: 'gemini_price' })
+    bytec_1 // "gemini_price"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:21
+    // this.geminiPrice.value = Uint64(100_000)
+    pushint 100000 // 100000
+    app_global_put
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:16
+    // gptPrice = GlobalState<uint64>({ key: 'gpt_price' })
+    bytec_3 // "gpt_price"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:22
+    // this.gptPrice.value = Uint64(500_000)
+    pushint 500000 // 500000
+    app_global_put
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:17
+    // claudePrice = GlobalState<uint64>({ key: 'claude_price' })
+    bytec 4 // "claude_price"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:23
+    // this.claudePrice.value = Uint64(800_000)
+    pushint 800000 // 800000
+    app_global_put
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:19
+    // public createApplication(): void {
+    intc_0 // 1
+    return
+
+
+// smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.payForAi[routing]() -> void:
+payForAi:
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:31
+    // public payForAi(payTxn: gtxn.PaymentTxn): void {
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:32
+    // this.assertTreasuryPayment(payTxn, this.geminiPrice.value)
+    intc_1 // 0
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:15
+    // geminiPrice = GlobalState<uint64>({ key: 'gemini_price' })
+    bytec_1 // "gemini_price"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:32
+    // this.assertTreasuryPayment(payTxn, this.geminiPrice.value)
+    app_global_get_ex
+    assert // check GlobalState exists
+    callsub assertTreasuryPayment
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:34
+    // log('PAID_BASE_MODEL')
+    bytec_0 // "PAID_BASE_MODEL"
+    log
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:31
+    // public payForAi(payTxn: gtxn.PaymentTxn): void {
+    intc_0 // 1
+    return
+
+
+// smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.payForGemini[routing]() -> void:
+payForGemini:
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:37
+    // public payForGemini(payTxn: gtxn.PaymentTxn): void {
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:38
+    // this.assertTreasuryPayment(payTxn, this.geminiPrice.value)
+    intc_1 // 0
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:15
+    // geminiPrice = GlobalState<uint64>({ key: 'gemini_price' })
+    bytec_1 // "gemini_price"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:38
+    // this.assertTreasuryPayment(payTxn, this.geminiPrice.value)
+    app_global_get_ex
+    assert // check GlobalState exists
+    callsub assertTreasuryPayment
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:40
+    // log('PAID_BASE_MODEL')
+    bytec_0 // "PAID_BASE_MODEL"
+    log
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:37
+    // public payForGemini(payTxn: gtxn.PaymentTxn): void {
+    intc_0 // 1
+    return
+
+
+// smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.payForGpt4o[routing]() -> void:
+payForGpt4o:
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:43
+    // public payForGpt4o(payTxn: gtxn.PaymentTxn): void {
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:44
+    // this.assertTreasuryPayment(payTxn, this.gptPrice.value)
+    intc_1 // 0
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:16
+    // gptPrice = GlobalState<uint64>({ key: 'gpt_price' })
+    bytec_3 // "gpt_price"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:44
+    // this.assertTreasuryPayment(payTxn, this.gptPrice.value)
+    app_global_get_ex
+    assert // check GlobalState exists
+    callsub assertTreasuryPayment
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:46
+    // log('PAID_BASE_MODEL')
+    bytec_0 // "PAID_BASE_MODEL"
+    log
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:43
+    // public payForGpt4o(payTxn: gtxn.PaymentTxn): void {
+    intc_0 // 1
+    return
+
+
+// smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.payForClaudeOpus[routing]() -> void:
+payForClaudeOpus:
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:49
+    // public payForClaudeOpus(payTxn: gtxn.PaymentTxn): void {
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:50
+    // this.assertTreasuryPayment(payTxn, this.claudePrice.value)
+    intc_1 // 0
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:17
+    // claudePrice = GlobalState<uint64>({ key: 'claude_price' })
+    bytec 4 // "claude_price"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:50
+    // this.assertTreasuryPayment(payTxn, this.claudePrice.value)
+    app_global_get_ex
+    assert // check GlobalState exists
+    callsub assertTreasuryPayment
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:52
+    // log('PAID_BASE_MODEL')
+    bytec_0 // "PAID_BASE_MODEL"
+    log
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:49
+    // public payForClaudeOpus(payTxn: gtxn.PaymentTxn): void {
+    intc_0 // 1
+    return
+
+
+// smart_contracts/ignition_gateway/IgnitionGateway.algo.ts::IgnitionGateway.assertTreasuryPayment(payTxn: uint64, expectedAmount: uint64) -> void:
+assertTreasuryPayment:
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:26
+    // private assertTreasuryPayment(payTxn: gtxn.PaymentTxn, expectedAmount: uint64): void {
+    proto 2 0
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:27
+    // assert(payTxn.receiver === this.treasuryAddress.value, 'Invalid treasury receiver')
+    frame_dig -2
+    gtxns Receiver
+    intc_1 // 0
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:14
+    // treasuryAddress = GlobalState<Account>({ key: 'treasury_address' })
+    bytec_2 // "treasury_address"
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:27
+    // assert(payTxn.receiver === this.treasuryAddress.value, 'Invalid treasury receiver')
+    app_global_get_ex
+    assert // check GlobalState exists
+    ==
+    assert // Invalid treasury receiver
+    // smart_contracts/ignition_gateway/IgnitionGateway.algo.ts:28
+    // assert(payTxn.amount === expectedAmount, 'Payment amount mismatch')
+    frame_dig -2
+    gtxns Amount
+    frame_dig -1
+    ==
+    assert // Payment amount mismatch
+    retsub

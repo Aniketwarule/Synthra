@@ -1,0 +1,14 @@
+version: "3.8"
+
+services:
+  backend:
+    build:
+      context: ./Synthra_backend
+    container_name: ignition-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./Synthra_backend/.env
+    volumes:
+      - ./Synthra_backend:/app
+      - /app/node_modules

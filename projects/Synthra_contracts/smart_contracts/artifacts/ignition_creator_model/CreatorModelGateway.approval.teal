@@ -1,0 +1,157 @@
+#pragma version 11
+#pragma typetrack false
+
+// @algorandfoundation/algorand-typescript/arc4/index.d.ts::Contract.approvalProgram() -> uint64:
+main:
+    intcblock 1 0 8
+    bytecblock "creator_address" "model_price"
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:12
+    // export class CreatorModelGateway extends Contract {
+    txn OnCompletion
+    !
+    assert // OnCompletion must be NoOp
+    txn ApplicationID
+    bz main_create_NoOp@6
+    pushbytess 0xd55a04f7 0x5713c50e // method "updateModelPrice(uint64)void", method "payForModel(pay)void"
+    txna ApplicationArgs 0
+    match updateModelPrice payForModel
+    err
+
+main_create_NoOp@6:
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:12
+    // export class CreatorModelGateway extends Contract {
+    pushbytes 0xcd19f1a6 // method "createApplication(address,uint64)void"
+    txna ApplicationArgs 0
+    match createApplication
+    err
+
+
+// smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts::CreatorModelGateway.createApplication[routing]() -> void:
+createApplication:
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:16
+    // public createApplication(creator: Account, initialModelPrice: uint64): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    pushint 32 // 32
+    ==
+    assert // invalid number of bytes for arc4.static_array<arc4.uint8, 32>
+    txna ApplicationArgs 2
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:17
+    // assert(initialModelPrice > 0, 'Model price must be greater than zero')
+    dup
+    assert // Model price must be greater than zero
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:13
+    // creatorAddress = GlobalState<Account>({ key: 'creator_address' })
+    bytec_0 // "creator_address"
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:19
+    // this.creatorAddress.value = creator
+    uncover 2
+    app_global_put
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:14
+    // modelPrice = GlobalState<uint64>({ key: 'model_price' })
+    bytec_1 // "model_price"
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:20
+    // this.modelPrice.value = initialModelPrice
+    swap
+    app_global_put
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:16
+    // public createApplication(creator: Account, initialModelPrice: uint64): void {
+    intc_0 // 1
+    return
+
+
+// smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts::CreatorModelGateway.updateModelPrice[routing]() -> void:
+updateModelPrice:
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:23
+    // public updateModelPrice(nextModelPrice: uint64): void {
+    txna ApplicationArgs 1
+    dup
+    len
+    intc_2 // 8
+    ==
+    assert // invalid number of bytes for arc4.uint64
+    btoi
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:24
+    // assert(Txn.sender === this.creatorAddress.value, 'Only creator can update model price')
+    txn Sender
+    intc_1 // 0
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:13
+    // creatorAddress = GlobalState<Account>({ key: 'creator_address' })
+    bytec_0 // "creator_address"
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:24
+    // assert(Txn.sender === this.creatorAddress.value, 'Only creator can update model price')
+    app_global_get_ex
+    assert // check GlobalState exists
+    ==
+    assert // Only creator can update model price
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:25
+    // assert(nextModelPrice > 0, 'Model price must be greater than zero')
+    dup
+    assert // Model price must be greater than zero
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:14
+    // modelPrice = GlobalState<uint64>({ key: 'model_price' })
+    bytec_1 // "model_price"
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:27
+    // this.modelPrice.value = nextModelPrice
+    swap
+    app_global_put
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:23
+    // public updateModelPrice(nextModelPrice: uint64): void {
+    intc_0 // 1
+    return
+
+
+// smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts::CreatorModelGateway.payForModel[routing]() -> void:
+payForModel:
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:30
+    // public payForModel(payTxn: gtxn.PaymentTxn): void {
+    txn GroupIndex
+    intc_0 // 1
+    -
+    dup
+    gtxns TypeEnum
+    intc_0 // pay
+    ==
+    assert // transaction type is pay
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:31
+    // assert(payTxn.receiver === this.creatorAddress.value, 'Invalid creator receiver')
+    dup
+    gtxns Receiver
+    intc_1 // 0
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:13
+    // creatorAddress = GlobalState<Account>({ key: 'creator_address' })
+    bytec_0 // "creator_address"
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:31
+    // assert(payTxn.receiver === this.creatorAddress.value, 'Invalid creator receiver')
+    app_global_get_ex
+    assert // check GlobalState exists
+    ==
+    assert // Invalid creator receiver
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:32
+    // assert(payTxn.amount >= this.modelPrice.value, 'Insufficient model payment amount')
+    gtxns Amount
+    intc_1 // 0
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:14
+    // modelPrice = GlobalState<uint64>({ key: 'model_price' })
+    bytec_1 // "model_price"
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:32
+    // assert(payTxn.amount >= this.modelPrice.value, 'Insufficient model payment amount')
+    app_global_get_ex
+    assert // check GlobalState exists
+    >=
+    assert // Insufficient model payment amount
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:34
+    // log('PAID_CREATOR_MODEL')
+    pushbytes "PAID_CREATOR_MODEL"
+    log
+    // smart_contracts/ignition_creator_model/CreatorModelGateway.algo.ts:30
+    // public payForModel(payTxn: gtxn.PaymentTxn): void {
+    intc_0 // 1
+    return
