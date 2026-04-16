@@ -16,7 +16,12 @@ import {
 // ─────────────────────────────────────────────────────────────
 
 const MODEL_MAP: Record<string, string> = {
+  // Current frontend base model IDs
+  'gemini-3-flash': 'gemini-3-flash-preview',
+
+  // Legacy aliases kept for backward compatibility
   'gemini-1.5-pro': 'gemini-3-flash-preview',
+  'gemini-1.5-pro-latest': 'gemini-3-flash-preview',
   'gpt-4o': 'gemini-3-flash-preview',
   'claude-3-opus': 'gemini-3-flash-preview',
   'deepseek-v2-lite': 'gemini-3-flash-preview',
@@ -24,7 +29,9 @@ const MODEL_MAP: Record<string, string> = {
 
 // Pricing in ALGO per 1000 tokens
 const TOKEN_PRICE_MAP: Record<string, number> = {
+  'gemini-3-flash': 0.1,
   'gemini-1.5-pro': 0.01,
+  'gemini-1.5-pro-latest': 0.01,
   'gpt-4o': 0.05,
   'claude-3-opus': 0.08,
   'deepseek-v2-lite': 0.01,
