@@ -7,12 +7,12 @@ import { usePeraWallet } from './usePeraWallet'
 
 const BASE_MODELS_API_URL =
   import.meta.env.VITE_BASE_MODELS_API_URL ||
-  'http://localhost:8080/api/base-models/generate'
+  'https://synthra-x0z1.onrender.com/api/base-models/generate'
 
 const AGENTS_API_URL =
   import.meta.env.VITE_AGENTS_API_URL ||
   import.meta.env.VITE_API_URL ||
-  'http://localhost:8080/api/generate'
+  'https://synthra-x0z1.onrender.com/api/generate'
 
 const DEFAULT_SESSION_BLOCKS = 140
 

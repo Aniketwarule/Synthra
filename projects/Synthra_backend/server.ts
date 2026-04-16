@@ -13,9 +13,23 @@ dns.setDefaultResultOrder('ipv4first');
 
 const app = express();
 const PORT = process.env.PORT || 8080;
+let isDegradedMode = false;
 
 app.use(cors());
 app.use(express.json());
+
+const healthHandler: express.RequestHandler = (_req, res) => {
+  res.status(200).json({
+    ok: true,
+    status: isDegradedMode ? 'degraded' : 'ok',
+    uptimeSeconds: Math.floor(process.uptime()),
+    timestamp: new Date().toISOString(),
+  });
+};
+
+// Health-check endpoints for Render/UptimeRobot keep-alive and monitoring.
+app.get('/healthz', healthHandler);
+app.get('/api/healthz', healthHandler);
 
 // Main Proxy endpoint
 app.post('/api/generate', generateRoute);
@@ -40,6 +54,7 @@ const startServer = async () => {
     } catch (error) {
       if (error instanceof SupabaseSchemaNotReadyError) {
         degradedMode = true;
+        isDegradedMode = true;
         console.warn(error.message);
         console.warn('[Init] Starting in degraded mode: DB-backed routes will fail until migration is applied.');
       } else {

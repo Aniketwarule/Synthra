@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { BookOpen, Terminal, Key, Code2, Zap, Shield, Copy, Check, ChevronRight } from 'lucide-react'
 
-const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
+const API_BASE = import.meta.env.VITE_BACKEND_URL || 'https://synthra-x0z1.onrender.com'
 
 interface DocSection {
   id: string

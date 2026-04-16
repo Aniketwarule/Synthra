@@ -5,7 +5,7 @@ import { ellipseAddress } from '../utils/ellipseAddress'
 import { BASE_MODELS } from '../types/models'
 import WalletConnectOptions from '../components/WalletConnectOptions'
 
-const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
+const API_BASE = import.meta.env.VITE_BACKEND_URL || 'https://synthra-x0z1.onrender.com'
 
 export default function ApiKey() {
   const { address, isConnected } = usePeraWallet()
