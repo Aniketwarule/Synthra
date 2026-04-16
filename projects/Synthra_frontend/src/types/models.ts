@@ -41,8 +41,8 @@ export const BASE_MODELS: AIModel[] = [
   {
     cost: 0.1,
     tokenPrice: 0.1, // 0.1 ALGO per prompt
-    id: 'gemini-3-flash',
-    name: 'Gemini 3 Flash Preview',
+    id: 'gemini-2.0-flash',
+    name: 'Gemini 2.0 Flash',
     description: "Google's fast multimodal model",
     costMicroAlgos: 100_000,
     destinationType: 'treasury',
