@@ -7,6 +7,14 @@ import WalletConnectOptions from '../components/WalletConnectOptions'
 
 const API_BASE = import.meta.env.VITE_BACKEND_URL || 'https://synthra-x0z1.onrender.com'
 
+const getModelIdCandidates = (modelId: string): string[] => {
+  if (modelId === 'gemini-2.0-flash') {
+    return ['gemini-2.0-flash', 'gemini-1.5-pro', 'gemini-1.5-pro-latest']
+  }
+
+  return [modelId]
+}
+
 export default function ApiKey() {
   const { address, isConnected } = usePeraWallet()
   const [apiKey, setApiKey] = useState<string | null>(null)
@@ -39,16 +47,41 @@ export default function ApiKey() {
     setIsGenerating(true)
     setError(null)
     try {
-      const res = await fetch(`${API_BASE}/api/apikeys/generate`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ walletAddress: address, modelId: selectedModelId }),
-      })
-      if (!res.ok) {
-        const errData = await res.json()
-        throw new Error(errData.error || 'Failed to generate API key')
+      const modelCandidates = getModelIdCandidates(selectedModelId)
+      let data: any = null
+      let lastError = 'Failed to generate API key'
+
+      for (const modelIdCandidate of modelCandidates) {
+        const res = await fetch(`${API_BASE}/api/apikeys/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ walletAddress: address, modelId: modelIdCandidate }),
+        })
+
+        if (res.ok) {
+          data = await res.json()
+          break
+        }
+
+        try {
+          const errData = await res.json()
+          lastError = errData.error || lastError
+          const isUnsupportedModel =
+            typeof errData.error === 'string' &&
+            errData.error.includes('is not supported for API key generation')
+
+          if (!isUnsupportedModel) {
+            throw new Error(lastError)
+          }
+        } catch {
+          lastError = `HTTP ${res.status}: ${res.statusText || 'Request failed'}`
+        }
       }
-      const data = await res.json()
+
+      if (!data) {
+        throw new Error(lastError)
+      }
+
       setApiKey(data.apiKey)
       setHits(data.hits)
     } catch (err: any) {

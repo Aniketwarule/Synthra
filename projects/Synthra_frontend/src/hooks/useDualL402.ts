@@ -5,14 +5,29 @@ import type { AIModel } from '../types/models'
 import { useFrictionlessSession } from './useFrictionlessSession'
 import { usePeraWallet } from './usePeraWallet'
 
-const BASE_MODELS_API_URL =
-  import.meta.env.VITE_BASE_MODELS_API_URL ||
-  'https://synthra-x0z1.onrender.com/api/base-models/generate'
+const RENDER_BACKEND_ORIGIN = 'https://synthra-x0z1.onrender.com'
 
-const AGENTS_API_URL =
-  import.meta.env.VITE_AGENTS_API_URL ||
-  import.meta.env.VITE_API_URL ||
-  'https://synthra-x0z1.onrender.com/api/generate'
+const resolveApiUrl = (configuredUrl: string | undefined, fallbackPath: string): string => {
+  const fallbackAbsolute = `${RENDER_BACKEND_ORIGIN}${fallbackPath}`
+  const url = configuredUrl || fallbackAbsolute
+
+  // Prevent accidental localhost API calls from hosted frontends.
+  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && url.includes('localhost')) {
+    return fallbackAbsolute
+  }
+
+  return url
+}
+
+const BASE_MODELS_API_URL = resolveApiUrl(
+  import.meta.env.VITE_BASE_MODELS_API_URL,
+  '/api/base-models/generate',
+)
+
+const AGENTS_API_URL = resolveApiUrl(
+  import.meta.env.VITE_AGENTS_API_URL || import.meta.env.VITE_API_URL,
+  '/api/generate',
+)
 
 const DEFAULT_SESSION_BLOCKS = 140
 
