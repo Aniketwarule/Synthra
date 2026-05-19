@@ -6,6 +6,7 @@ import agentRoutes from './routes/agent.routes';
 import dns from 'node:dns';
 import { generateRoute } from './controllers/generate';
 import baseModelsRouter from './routes/baseModels';
+import authorizeRouter from './routes/authorize';
 import { SupabaseSchemaNotReadyError, verifySupabaseConnection } from './db/supabase';
 
 dotenv.config();
@@ -43,6 +44,9 @@ app.post('/api/apikeys/chat', chatCompletion);   // OpenAI-compatible chat endpo
 app.post('/api/apikeys/hit', hitApiKey);          // Legacy simple prompt endpoint
 app.get('/api/apikeys/stats', getApiKeyStats);
 app.use('/api', agentRoutes);
+
+// Delegated LogicSig session authorization
+app.use('/api/authorize', authorizeRouter);
 
 const startServer = async () => {
   try {

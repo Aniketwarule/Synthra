@@ -1,6 +1,0 @@
-[mcp_servers.kappa]
-url = "https://algorand-docs.mcp.kapa.ai/"
-
-[mcp_servers.vibekit-mcp]
-command = "/home/ghost/.local/bin/vibekit"
-args = ["mcp"]

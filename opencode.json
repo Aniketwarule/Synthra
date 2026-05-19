@@ -1,0 +1,19 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "mcp": {
+    "kappa": {
+      "type": "remote",
+      "url": "https://algorand-docs.mcp.kapa.ai/",
+      "enabled": true
+    },
+    "vibekit-mcp": {
+      "type": "local",
+      "command": [
+        "C:\\Users\\Anike\\.vibekit\\bin\\vibekit.exe",
+        "mcp"
+      ],
+      "environment": {},
+      "enabled": true
+    }
+  }
+}

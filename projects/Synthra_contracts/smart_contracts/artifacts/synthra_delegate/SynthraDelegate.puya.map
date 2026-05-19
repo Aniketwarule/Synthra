@@ -1,0 +1,585 @@
+{
+  "version": 3,
+  "sources": [
+    "../../synthra_delegate/SynthraDelegate.algo.ts"
+  ],
+  "mappings": ";;AAkDM;;AAAiB;AAAjB;AAAA;;;AACA;;AAAe;AAAf;AADA;;;AAEA;;AAAiB;AAAjB;AAFA;;;AAGA;;AAAyB;;AAAzB;AAHA;;;;;;AAOA;;AAAiB;AAAjB;AAAA;;;AACA;;AAAiB;AAAjB;AADA;;;AAEA;;AAFA;;;AAGA;;AAAyB;AAAzB;AAHA;;;;AAMK;;AAAiB;AAAjB;AAAP;AACO;;AAA4B;AAA5B;AAAP;AAGO;;AAAkB;;;AAAlB;AAAP;AACO;;AAAgB;;AAAhB;AAAP;AAGO;;AAAA;AAAP;AAEO;AAAP;;;;;;;;",
+  "op_pc_offset": 2,
+  "pc_events": {
+    "0": {
+      "op": "pushbytes \"\"",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "2": {
+      "op": "txn Receiver",
+      "defined_out": [
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%0#0"
+      ]
+    },
+    "4": {
+      "op": "bytec_1 // TMPL_TREASURY_ADDRESS",
+      "defined_out": [
+        "TMPL_TREASURY_ADDRESS",
+        "tmp%0#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%0#0",
+        "TMPL_TREASURY_ADDRESS"
+      ]
+    },
+    "5": {
+      "op": "==",
+      "defined_out": [
+        "tmp%1#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%1#0"
+      ]
+    },
+    "6": {
+      "op": "bz main_bool_false@5",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "9": {
+      "op": "txn Amount",
+      "defined_out": [
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%2#0"
+      ]
+    },
+    "11": {
+      "op": "intc_3 // TMPL_COST_MICROALGOS",
+      "defined_out": [
+        "TMPL_COST_MICROALGOS",
+        "tmp%2#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%2#0",
+        "TMPL_COST_MICROALGOS"
+      ]
+    },
+    "12": {
+      "op": "==",
+      "defined_out": [
+        "tmp%3#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%3#0"
+      ]
+    },
+    "13": {
+      "op": "bz main_bool_false@5",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "16": {
+      "op": "txn LastValid",
+      "defined_out": [
+        "tmp%4#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%4#0"
+      ]
+    },
+    "18": {
+      "op": "intc_1 // TMPL_EXPIRY_ROUND",
+      "defined_out": [
+        "TMPL_EXPIRY_ROUND",
+        "tmp%4#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%4#0",
+        "TMPL_EXPIRY_ROUND"
+      ]
+    },
+    "19": {
+      "op": "<=",
+      "defined_out": [
+        "tmp%5#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%5#0"
+      ]
+    },
+    "20": {
+      "op": "bz main_bool_false@5",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "23": {
+      "op": "txn CloseRemainderTo",
+      "defined_out": [
+        "tmp%6#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%6#0"
+      ]
+    },
+    "25": {
+      "op": "global ZeroAddress",
+      "defined_out": [
+        "tmp%6#0",
+        "tmp%7#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%6#0",
+        "tmp%7#0"
+      ]
+    },
+    "27": {
+      "op": "==",
+      "defined_out": [
+        "tmp%8#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%8#0"
+      ]
+    },
+    "28": {
+      "op": "bz main_bool_false@5",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "31": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "isPromptPayment#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isPromptPayment#0"
+      ]
+    },
+    "32": {
+      "op": "bury 1",
+      "defined_out": [
+        "isPromptPayment#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "34": {
+      "block": "main_bool_merge@6",
+      "stack_in": [
+        "isPromptPayment#0"
+      ],
+      "op": "txn FirstValid",
+      "defined_out": [
+        "tmp%9#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%9#0"
+      ]
+    },
+    "36": {
+      "op": "intc_1 // TMPL_EXPIRY_ROUND",
+      "defined_out": [
+        "TMPL_EXPIRY_ROUND",
+        "tmp%9#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%9#0",
+        "TMPL_EXPIRY_ROUND"
+      ]
+    },
+    "37": {
+      "op": ">",
+      "defined_out": [
+        "tmp%10#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%10#0"
+      ]
+    },
+    "38": {
+      "op": "bz main_bool_false@11",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "41": {
+      "op": "txn Receiver",
+      "defined_out": [
+        "tmp%11#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%11#0"
+      ]
+    },
+    "43": {
+      "op": "bytec_0 // TMPL_OWNER_ADDRESS",
+      "defined_out": [
+        "TMPL_OWNER_ADDRESS",
+        "tmp%11#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%11#0",
+        "TMPL_OWNER_ADDRESS"
+      ]
+    },
+    "44": {
+      "op": "==",
+      "defined_out": [
+        "tmp%12#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%12#0"
+      ]
+    },
+    "45": {
+      "op": "bz main_bool_false@11",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "48": {
+      "op": "txn Amount",
+      "defined_out": [
+        "tmp%13#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%13#0"
+      ]
+    },
+    "50": {
+      "op": "bnz main_bool_false@11",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "53": {
+      "op": "txn CloseRemainderTo",
+      "defined_out": [
+        "tmp%15#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%15#0"
+      ]
+    },
+    "55": {
+      "op": "bytec_0 // TMPL_OWNER_ADDRESS",
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%15#0",
+        "TMPL_OWNER_ADDRESS"
+      ]
+    },
+    "56": {
+      "op": "==",
+      "defined_out": [
+        "tmp%16#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%16#0"
+      ]
+    },
+    "57": {
+      "op": "bz main_bool_false@11",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "60": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "isExpiryCloseOut#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0"
+      ]
+    },
+    "61": {
+      "block": "main_bool_merge@12",
+      "stack_in": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0"
+      ],
+      "op": "txn TypeEnum",
+      "defined_out": [
+        "tmp%17#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%17#0"
+      ]
+    },
+    "63": {
+      "op": "intc_0 // 1",
+      "defined_out": [
+        "1",
+        "tmp%17#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%17#0",
+        "1"
+      ]
+    },
+    "64": {
+      "op": "==",
+      "defined_out": [
+        "tmp%18#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%18#0"
+      ]
+    },
+    "65": {
+      "error": "Only payment transactions are allowed",
+      "op": "assert // Only payment transactions are allowed",
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0"
+      ]
+    },
+    "66": {
+      "op": "global GroupSize",
+      "defined_out": [
+        "tmp%19#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%19#0"
+      ]
+    },
+    "68": {
+      "op": "intc_0 // 1",
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%19#0",
+        "1"
+      ]
+    },
+    "69": {
+      "op": "==",
+      "defined_out": [
+        "tmp%20#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%20#0"
+      ]
+    },
+    "70": {
+      "error": "Grouped transactions are not allowed",
+      "op": "assert // Grouped transactions are not allowed",
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0"
+      ]
+    },
+    "71": {
+      "op": "txn Fee",
+      "defined_out": [
+        "tmp%21#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%21#0"
+      ]
+    },
+    "73": {
+      "op": "pushint 1000 // 1000",
+      "defined_out": [
+        "1000",
+        "tmp%21#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%21#0",
+        "1000"
+      ]
+    },
+    "76": {
+      "op": "<=",
+      "defined_out": [
+        "tmp%22#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%22#0"
+      ]
+    },
+    "77": {
+      "error": "Fee too high",
+      "op": "assert // Fee too high",
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0"
+      ]
+    },
+    "78": {
+      "op": "txn RekeyTo",
+      "defined_out": [
+        "tmp%23#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%23#0"
+      ]
+    },
+    "80": {
+      "op": "global ZeroAddress",
+      "defined_out": [
+        "tmp%23#0",
+        "tmp%24#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%23#0",
+        "tmp%24#0"
+      ]
+    },
+    "82": {
+      "op": "==",
+      "defined_out": [
+        "tmp%25#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "tmp%25#0"
+      ]
+    },
+    "83": {
+      "error": "Rekey is not allowed",
+      "op": "assert // Rekey is not allowed",
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0"
+      ]
+    },
+    "84": {
+      "op": "dig 1",
+      "defined_out": [
+        "isPromptPayment#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0",
+        "isPromptPayment#0"
+      ]
+    },
+    "86": {
+      "op": "||",
+      "defined_out": [
+        "isPromptPayment#0",
+        "tmp%26#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "tmp%26#0"
+      ]
+    },
+    "87": {
+      "error": "Transaction does not match session policy",
+      "op": "assert // Transaction does not match session policy",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "88": {
+      "op": "intc_0 // 1",
+      "stack_out": [
+        "isPromptPayment#0",
+        "1"
+      ]
+    },
+    "89": {
+      "op": "return",
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "90": {
+      "block": "main_bool_false@11",
+      "stack_in": [
+        "isPromptPayment#0"
+      ],
+      "op": "intc_2 // 0",
+      "defined_out": [
+        "isExpiryCloseOut#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isExpiryCloseOut#0"
+      ]
+    },
+    "91": {
+      "op": "b main_bool_merge@12"
+    },
+    "94": {
+      "block": "main_bool_false@5",
+      "stack_in": [
+        "isPromptPayment#0"
+      ],
+      "op": "intc_2 // 0",
+      "defined_out": [
+        "isPromptPayment#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0",
+        "isPromptPayment#0"
+      ]
+    },
+    "95": {
+      "op": "bury 1",
+      "defined_out": [
+        "isPromptPayment#0"
+      ],
+      "stack_out": [
+        "isPromptPayment#0"
+      ]
+    },
+    "97": {
+      "op": "b main_bool_merge@6"
+    }
+  }
+}

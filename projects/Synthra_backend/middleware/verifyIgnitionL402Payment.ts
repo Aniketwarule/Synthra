@@ -5,6 +5,8 @@ import {
   reserveTxProof,
   TxProofScope,
 } from '../repositories/paymentTxProofs';
+import { chargeForPrompt } from '../services/charge.service';
+import { lsigStore } from '../routes/authorize';
 
 type IndexerTxn = {
   id?: string;
@@ -196,7 +198,56 @@ export const verifyIgnitionL402Payment = async (
   }
 
   // The L402 intercept: missing bearer token means client has not paid yet.
-  const txId = getBearerToken(req.headers.authorization);
+  const authHeader = req.headers.authorization;
+
+  // --- Support Escrow LogicSig (Delegated) Flow ---
+  if (authHeader && authHeader.startsWith('Delegated ')) {
+    const userAddress = authHeader.split(' ')[1];
+    
+    const algodClient = new algosdk.Algodv2(
+      process.env.ALGOD_TOKEN !== undefined ? process.env.ALGOD_TOKEN : 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+      process.env.ALGOD_URL || 'http://localhost:4001',
+      ''
+    );
+
+    const chargeResult = await chargeForPrompt({
+      userAddress,
+      algodClient,
+      lsigStore,
+      serviceAddress: treasuryAddress,
+      costMicroAlgo: expectedAmountMicroAlgos
+    });
+
+    if (!chargeResult.ok) {
+      if (chargeResult.reason === 'insufficient_balance' || chargeResult.reason === 'expired') {
+        console.warn(`[L402] Escrow LogicSig charge failed (${chargeResult.reason}): ${chargeResult.detail}`);
+        respondPaymentRequired(res, expectedAmountMicroAlgos, treasuryAddress);
+      } else {
+        respondUnauthorized(res, 'DelegatedPayment', `Escrow LogicSig charge failed: ${chargeResult.reason} - ${chargeResult.detail}`);
+      }
+      return;
+    }
+
+    const verifiedRequest = req as L402VerifiedRequest;
+    verifiedRequest.ignitionPayment = {
+      txId: chargeResult.txId,
+      groupId: 'DELEGATED_LSIG',
+      payer: userAddress,
+      amountMicroAlgos: expectedAmountMicroAlgos,
+      confirmedRound: 0 // Approximate, or we can fetch status
+    };
+
+    verifiedRequest.finalizeIgnitionPayment = (consumed: boolean) => {
+      // For escrow lsig, we actually submitted the transaction and it's confirmed.
+      // There's no reserved tx proof to finalize. So we do nothing.
+    };
+
+    next();
+    return;
+  }
+
+  // --- Support Standard L402 Bearer Flow ---
+  const txId = getBearerToken(authHeader);
   if (!txId) {
     respondPaymentRequired(res, expectedAmountMicroAlgos, treasuryAddress);
     return;

@@ -8,6 +8,9 @@ import {
   TxProofScope,
 } from '../repositories/paymentTxProofs';
 
+import { chargeForPrompt } from '../services/charge.service';
+import { lsigStore } from '../routes/authorize';
+
 const indexerClient = new algosdk.Indexer('', 'https://testnet-idx.algonode.cloud', '');
 const PAYMENT_PROOF_SCOPE: TxProofScope = 'marketplace_generate';
 
@@ -35,89 +38,122 @@ export const generateRoute = async (req: Request, res: Response): Promise<void> 
     const requiredAmount = Math.round(agent.priceAlgo * 1_000_000);
     const requiredAddress = agent.creatorWallet;
 
-    // ─── Step 1: The L402 Intercept ───
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      // 402 Payment Required
-      const invoiceId = crypto.randomBytes(8).toString('hex');
-      const challenge = Buffer.from(
-        JSON.stringify({
+    // ─── Step 1: Handle Delegated LogicSig ───
+    if (authHeader && authHeader.startsWith('Delegated ')) {
+      const userAddress = authHeader.split(' ')[1];
+      
+      const algodClient = new algosdk.Algodv2(
+        process.env.ALGOD_TOKEN !== undefined ? process.env.ALGOD_TOKEN : 'aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+        process.env.ALGOD_URL || 'http://localhost:4001',
+        ''
+      );
+
+      const chargeResult = await chargeForPrompt({
+        userAddress,
+        algodClient,
+        lsigStore,
+        serviceAddress: requiredAddress,
+        costMicroAlgo: requiredAmount
+      });
+
+      if (!chargeResult.ok) {
+        if (chargeResult.reason === 'insufficient_balance' || chargeResult.reason === 'expired') {
+          console.warn(`[Generate] Escrow LogicSig charge failed (${chargeResult.reason}): ${chargeResult.detail}`);
+          res.status(402).json({ error: `Payment Required: ${chargeResult.reason}` });
+        } else {
+          res.status(401).json({ error: `Delegated LogicSig charge failed: ${chargeResult.reason} - ${chargeResult.detail}` });
+        }
+        return;
+      }
+      
+      reservedTxId = chargeResult.txId;
+      consumePaymentProof = true;
+      console.log(`[Generate] Successfully charged delegated lsig for ${userAddress}, txId: ${reservedTxId}`);
+    } 
+    // ─── Step 2: Standard L402 Intercept & Verify ───
+    else {
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        // 402 Payment Required
+        const invoiceId = crypto.randomBytes(8).toString('hex');
+        const challenge = Buffer.from(
+          JSON.stringify({
+            amountMicroAlgos: requiredAmount,
+            creatorAddress: requiredAddress,
+            invoiceId: invoiceId,
+            message: `Payment required for ${agent.name}`,
+          })
+        ).toString('base64');
+
+        res.status(402).set('Payment-Required', challenge).json({
+          error: 'Payment Required',
           amountMicroAlgos: requiredAmount,
           creatorAddress: requiredAddress,
-          invoiceId: invoiceId,
-          message: `Payment required for ${agent.name}`,
-        })
-      ).toString('base64');
+          invoiceId: invoiceId
+        });
+        return;
+      }
 
-      res.status(402).set('Payment-Required', challenge).json({
-        error: 'Payment Required',
-        amountMicroAlgos: requiredAmount,
-        creatorAddress: requiredAddress,
-        invoiceId: invoiceId
-      });
-      return;
-    }
+      const txId = authHeader.split(' ')[1];
+      reservedTxId = txId;
 
-    // ─── Step 2: Extract & Verify Transaction (Double-spend protection) ───
-    const txId = authHeader.split(' ')[1];
-    reservedTxId = txId;
-
-    let txInfo;
-    for (let attempt = 1; attempt <= 10; attempt += 1) {
-      try {
-        txInfo = await indexerClient.lookupTransactionByID(txId).do();
-        const txCandidate = txInfo?.transaction as any;
-        const confirmedRound = Number(txCandidate?.['confirmed-round'] ?? txCandidate?.confirmedRound ?? 0);
-        if (confirmedRound > 0) {
-          break;
+      let txInfo;
+      for (let attempt = 1; attempt <= 10; attempt += 1) {
+        try {
+          txInfo = await indexerClient.lookupTransactionByID(txId).do();
+          const txCandidate = txInfo?.transaction as any;
+          const confirmedRound = Number(txCandidate?.['confirmed-round'] ?? txCandidate?.confirmedRound ?? 0);
+          if (confirmedRound > 0) {
+            break;
+          }
+        } catch {
+          // Retry until the indexer catches up.
         }
-      } catch {
-        // Retry until the indexer catches up.
+
+        if (attempt < 10) {
+          await sleep(900);
+        }
       }
 
-      if (attempt < 10) {
-        await sleep(900);
+      if (!txInfo?.transaction) {
+        res.status(401).json({ error: 'Invalid or missing transaction' });
+        return;
       }
-    }
 
-    if (!txInfo?.transaction) {
-      res.status(401).json({ error: 'Invalid or missing transaction' });
-      return;
-    }
+      const txn: any = txInfo.transaction;
 
-    const txn: any = txInfo.transaction;
+      if (Number(txn['confirmed-round'] ?? txn.confirmedRound ?? 0) <= 0) {
+        res.status(401).json({ error: 'Transaction is not confirmed yet' });
+        return;
+      }
 
-    if (Number(txn['confirmed-round'] ?? txn.confirmedRound ?? 0) <= 0) {
-      res.status(401).json({ error: 'Transaction is not confirmed yet' });
-      return;
-    }
+      // Ensure it's a payment transaction
+      if (txn['tx-type'] !== 'pay') {
+        res.status(401).json({ error: 'Transaction must be a payment' });
+        return;
+      }
 
-    // Ensure it's a payment transaction
-    if (txn['tx-type'] !== 'pay') {
-      res.status(401).json({ error: 'Transaction must be a payment' });
-      return;
-    }
+      // Verify the receiver destination
+      if (txn['payment-transaction'].receiver !== requiredAddress) {
+        res.status(401).json({ error: 'Payment destination address mismatch' });
+        return;
+      }
 
-    // Verify the receiver destination
-    if (txn['payment-transaction'].receiver !== requiredAddress) {
-      res.status(401).json({ error: 'Payment destination address mismatch' });
-      return;
-    }
+      // Verify the amount paid (strict exact amount for true pay-per-use).
+      if (txn['payment-transaction'].amount !== requiredAmount) {
+        res.status(401).json({ error: `Payment amount mismatch. Expected exactly ${requiredAmount} microAlgos.` });
+        return;
+      }
 
-    // Verify the amount paid (strict exact amount for true pay-per-use).
-    if (txn['payment-transaction'].amount !== requiredAmount) {
-      res.status(401).json({ error: `Payment amount mismatch. Expected exactly ${requiredAmount} microAlgos.` });
-      return;
-    }
+      const reservation = await reserveTxProof(txId, PAYMENT_PROOF_SCOPE);
+      if (reservation === 'already_used') {
+        res.status(409).json({ error: 'Transaction already used (double spend)' });
+        return;
+      }
 
-    const reservation = await reserveTxProof(txId, PAYMENT_PROOF_SCOPE);
-    if (reservation === 'already_used') {
-      res.status(409).json({ error: 'Transaction already used (double spend)' });
-      return;
-    }
-
-    if (reservation === 'in_flight') {
-      res.status(409).json({ error: 'Transaction is already being processed' });
-      return;
+      if (reservation === 'in_flight') {
+        res.status(409).json({ error: 'Transaction is already being processed' });
+        return;
+      }
     }
 
     // ─── Step 3: The Dual Router ───
@@ -147,7 +183,7 @@ export const generateRoute = async (req: Request, res: Response): Promise<void> 
             'Content-Type': 'application/json',
             // Pass along generic metadata
             'X-Ignition-Agent': agent.name,
-            'X-Ignition-TxId': txId,
+            'X-Ignition-TxId': reservedTxId || '',
           },
           body: JSON.stringify({ prompt }),
         });

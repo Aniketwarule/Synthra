@@ -1,0 +1,133 @@
+#pragma version 11
+#pragma typetrack false
+
+// smart_contracts/synthra_delegate/SynthraDelegate.algo.ts::program() -> uint64:
+main:
+    intcblock 1 TMPL_EXPIRY_ROUND 0 TMPL_COST_MICROALGOS
+    bytecblock TMPL_OWNER_ADDRESS TMPL_TREASURY_ADDRESS
+    pushbytes ""
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51
+    // Txn.receiver === treasuryAddress &&
+    txn Receiver
+    bytec_1 // TMPL_TREASURY_ADDRESS
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51-52
+    // Txn.receiver === treasuryAddress &&
+    // Txn.amount === costMicroAlgos &&
+    bz main_bool_false@5
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:52
+    // Txn.amount === costMicroAlgos &&
+    txn Amount
+    intc_3 // TMPL_COST_MICROALGOS
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51-52
+    // Txn.receiver === treasuryAddress &&
+    // Txn.amount === costMicroAlgos &&
+    bz main_bool_false@5
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:53
+    // Txn.lastValid <= expiryRound &&
+    txn LastValid
+    intc_1 // TMPL_EXPIRY_ROUND
+    <=
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51-53
+    // Txn.receiver === treasuryAddress &&
+    // Txn.amount === costMicroAlgos &&
+    // Txn.lastValid <= expiryRound &&
+    bz main_bool_false@5
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:54
+    // Txn.closeRemainderTo === Global.zeroAddress
+    txn CloseRemainderTo
+    global ZeroAddress
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51-54
+    // Txn.receiver === treasuryAddress &&
+    // Txn.amount === costMicroAlgos &&
+    // Txn.lastValid <= expiryRound &&
+    // Txn.closeRemainderTo === Global.zeroAddress
+    bz main_bool_false@5
+    intc_0 // 1
+    bury 1
+
+main_bool_merge@6:
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58
+    // Txn.firstValid > expiryRound &&
+    txn FirstValid
+    intc_1 // TMPL_EXPIRY_ROUND
+    >
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58-59
+    // Txn.firstValid > expiryRound &&
+    // Txn.receiver === ownerAddress &&
+    bz main_bool_false@11
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:59
+    // Txn.receiver === ownerAddress &&
+    txn Receiver
+    bytec_0 // TMPL_OWNER_ADDRESS
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58-59
+    // Txn.firstValid > expiryRound &&
+    // Txn.receiver === ownerAddress &&
+    bz main_bool_false@11
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:60
+    // Txn.amount === Uint64(0) &&
+    txn Amount
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58-60
+    // Txn.firstValid > expiryRound &&
+    // Txn.receiver === ownerAddress &&
+    // Txn.amount === Uint64(0) &&
+    bnz main_bool_false@11
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:61
+    // Txn.closeRemainderTo === ownerAddress
+    txn CloseRemainderTo
+    bytec_0 // TMPL_OWNER_ADDRESS
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58-61
+    // Txn.firstValid > expiryRound &&
+    // Txn.receiver === ownerAddress &&
+    // Txn.amount === Uint64(0) &&
+    // Txn.closeRemainderTo === ownerAddress
+    bz main_bool_false@11
+    intc_0 // 1
+
+main_bool_merge@12:
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:64
+    // assert(Txn.typeEnum === TransactionType.Payment, 'Only payment transactions are allowed')
+    txn TypeEnum
+    intc_0 // 1
+    ==
+    assert // Only payment transactions are allowed
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:65
+    // assert(Global.groupSize === Uint64(1), 'Grouped transactions are not allowed')
+    global GroupSize
+    intc_0 // 1
+    ==
+    assert // Grouped transactions are not allowed
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:68
+    // assert(Txn.fee <= Uint64(1_000), 'Fee too high')
+    txn Fee
+    pushint 1000 // 1000
+    <=
+    assert // Fee too high
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:69
+    // assert(Txn.rekeyTo === Global.zeroAddress, 'Rekey is not allowed')
+    txn RekeyTo
+    global ZeroAddress
+    ==
+    assert // Rekey is not allowed
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:72
+    // assert(isPromptPayment || isExpiryCloseOut, 'Transaction does not match session policy')
+    dig 1
+    ||
+    assert // Transaction does not match session policy
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:74
+    // return true
+    intc_0 // 1
+    return
+
+main_bool_false@11:
+    intc_2 // 0
+    b main_bool_merge@12
+
+main_bool_false@5:
+    intc_2 // 0
+    bury 1
+    b main_bool_merge@6

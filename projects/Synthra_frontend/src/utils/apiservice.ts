@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://synthra-x0z1.onrender.com/api",
+  baseURL: import.meta.env.VITE_BACKEND_URL ? `${import.meta.env.VITE_BACKEND_URL}/api` : "http://localhost:8080/api",
   headers: {
     "Content-Type": "application/json",
   },

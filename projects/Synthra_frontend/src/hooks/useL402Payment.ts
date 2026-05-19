@@ -13,18 +13,11 @@ import type {
 // Helpers
 // ─────────────────────────────────────────────────────
 
-const RENDER_BACKEND_ORIGIN = 'https://synthra-x0z1.onrender.com'
+const BACKEND_ORIGIN = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
 
 const resolveApiUrl = (configuredUrl: string | undefined, fallbackPath: string): string => {
-  const fallbackAbsolute = `${RENDER_BACKEND_ORIGIN}${fallbackPath}`
-  const url = configuredUrl || fallbackPath
-
-  // Prevent accidental localhost API calls from hosted frontends.
-  if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && url.includes('localhost')) {
-    return fallbackAbsolute
-  }
-
-  return url
+  const fallbackAbsolute = `${BACKEND_ORIGIN}${fallbackPath}`
+  return configuredUrl || fallbackAbsolute
 }
 
 const API_URL = resolveApiUrl(import.meta.env.VITE_API_URL, '/api/generate')
