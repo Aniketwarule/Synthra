@@ -6,12 +6,15 @@ interface WalletConnectOptionsProps {
   className?: string
   buttonClassName?: string
   showUnavailableHint?: boolean
+  /** When true, hides the dropdown caret and connects with default wallet on click */
+  compact?: boolean
 }
 
 export default function WalletConnectOptions({
   className,
   buttonClassName,
   showUnavailableHint = false,
+  compact = false,
 }: WalletConnectOptionsProps) {
   const { walletOptions, connect, isConnecting } = usePeraWallet()
   const [isOpen, setIsOpen] = useState(false)
@@ -38,7 +41,8 @@ export default function WalletConnectOptions({
     return () => document.removeEventListener('mousedown', onMouseDown)
   }, [])
 
-  if (visibleWallets.length === 0) {
+  // Compact mode or no wallets: single button, no dropdown
+  if (compact || visibleWallets.length === 0) {
     return (
       <div className={className}>
         <button

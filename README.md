@@ -64,15 +64,15 @@ We are building the **financial backbone for the AI-native internet** — where 
 
 ## 🏗️ System Architecture
 
-### 🔄 Flow Overview
+### 🔄 Marketplace + Agent Flow
 
 ```
-1. User sends first prompt
-2. Signs LogicSig (one-time authorization)
-3. Funds session wallet
-4. AI agent runs autonomously
-5. Each API call triggers micro-payment
-6. Output streamed back in real-time
+1. Creator publishes an agent or API endpoint with price + metadata
+2. Catalog lists items for discovery (agents + APIs)
+3. Consumer selects and sends a request
+4. Payment handled via L402 (USDC) or delegated LogicSig session
+5. Backend verifies payment and routes to internal LLM or external endpoint
+6. Usage metrics and revenue are recorded
 ```
 
 ### 🧩 Components
@@ -81,9 +81,16 @@ We are building the **financial backbone for the AI-native internet** — where 
 |---|---|
 | 🎨 Frontend | React (Vite) |
 | ⚙️ Backend | Node.js + Express |
-| 🤖 AI Layer | Groq / Gemini APIs |
+| 🤖 AI Layer | Groq + Gemini APIs |
 | ⛓️ Blockchain | Algorand (LogicSig + Smart Contracts) |
-| 🔗 Protocol | x402 |
+| 🔗 Protocol | x402 (L402) |
+| 🛒 Marketplace | x402 facilitator + Supabase catalog/metrics |
+| 📦 SDK | synthra-x402 |
+
+### 💳 Payment Modes
+
+- **Delegated LogicSig session**: `/api/authorize/prepare` compiles a per-session LogicSig; `/api/authorize` stores the funded escrow. Requests use `Authorization: Delegated <address>` to auto-charge USDC without popups.
+- **Standard L402 (USDC)**: client pays exact USDC, then sends `Authorization: Bearer <txId>` to `/api/generate` or `/api/base-models/generate`. The backend verifies confirmation and blocks reuse.
 
 ---
 
@@ -106,27 +113,52 @@ Convert existing AI APIs into monetizable services instantly.
 
 ---
 
-## 🌐 Marketplace Ecosystem
+## 🛒 API Marketplace
 
 ### 👥 Participants
 
 | Role | Description |
 |---|---|
-| 🧠 AI Creators | Publish & monetize models |
-| 🤖 AI Agents | Consume services autonomously |
-| 👤 Users | Fund & initiate sessions |
+| 🧠 API Creators | Publish endpoints with price + metadata |
+| 🤖 AI Agents | Discover and consume APIs autonomously |
+| 👤 Users | Fund sessions or pay per call |
 
-### 🔁 Ecosystem Flow
+### 🔁 Marketplace Flow
 
 ```
-Creator  →  Publishes AI API  →  Wrapped with payment layer
-                                          ↓
-AI Agent  →  Discovers API  →  Executes tasks autonomously
-                                          ↓
-              LogicSig  →  Handles autonomous payments
-                                          ↓
-                    Creator  →  Earns instantly per usage
+Creator → /api/marketplace/deploy → Catalog
+Agent/Dev → /api/marketplace/catalog → Pay (L402) → Call endpoint
+Creator → /api/marketplace/metrics/:wallet → Revenue + usage analytics
 ```
+
+### ✅ Marketplace APIs (Backend)
+
+- **Publish endpoint**: `POST /api/marketplace/deploy` (name, description, target_url, price_usdc, tags)
+- **Catalog**: `GET /api/marketplace/catalog`
+- **Metrics**: `GET /api/marketplace/metrics/:wallet`
+- **Facilitator**: `/api/marketplace/supported`, `/api/marketplace/verify`, `/api/marketplace/settle`
+- **Discovery**: Bazaar metadata is extracted during settlement to help catalog endpoints
+
+## 🤖 Agent Flow
+
+### 🧩 Agent Types
+
+- **Internal agents**: Hosted LLM calls (Groq) with a system prompt.
+- **External agents**: Proxy to a creator-owned HTTP endpoint.
+
+### 🔁 Agent Lifecycle
+
+```
+Creator → POST /api/publish → Agent listed
+User/Agent → GET /api/agents → Select agent
+User/Agent → POST /api/generate { prompt, agentId }
+Payment → L402 txId or Delegated LogicSig → Verified → Routed → Response streamed
+```
+
+### 🧾 Agent Request Routing
+
+- **Internal**: Calls Groq with the agent's base model + system prompt.
+- **External**: Proxies to `endpointUrl` and forwards `X-Ignition-Agent` + `X-Ignition-TxId` headers.
 
 ---
 

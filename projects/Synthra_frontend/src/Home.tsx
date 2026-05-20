@@ -226,7 +226,8 @@ export default function Home() {
             ) : (
               <WalletConnectOptions
                 className="flex"
-                buttonClassName="bg-[var(--ink-0)] hover:bg-[var(--ink-1)] text-[var(--bg-0)] px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-lg"
+                buttonClassName="flex items-center gap-2 bg-[var(--ink-0)] hover:bg-[var(--ink-1)] text-[var(--bg-0)] px-5 py-2 rounded-full text-sm font-semibold transition-all shadow-md hover:shadow-lg"
+                compact
               />
             )}
           </div>
