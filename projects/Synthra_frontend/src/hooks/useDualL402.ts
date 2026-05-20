@@ -102,7 +102,7 @@ export function useDualL402(selectedModel: AIModel | null) {
 
       const destLabel = selectedModel.destinationType === 'treasury' ? 'Platform Treasury' : selectedModel.creator ?? 'Creator'
       if (!isAutoRetry) {
-        push(`Model: ${selectedModel.name} | ${selectedModel.cost} ALGO -> ${destLabel}`, 'INFO')
+        push(`Model: ${selectedModel.name} | $${selectedModel.cost} USDC -> ${destLabel}`, 'INFO')
       }
 
       // --- 1. Check Session ---
@@ -110,7 +110,7 @@ export function useDualL402(selectedModel: AIModel | null) {
       const algodClient = getAlgodClient()
       
       let needsAuth = false
-      if (!session || session.userAddress !== address || session.costMicroAlgo !== selectedModel.costMicroAlgos) {
+      if (!session || session.userAddress !== address || session.costMicroAlgo !== selectedModel.costMicroUSDC) {
          needsAuth = true
       } else {
          try {
@@ -127,18 +127,18 @@ export function useDualL402(selectedModel: AIModel | null) {
       }
 
       if (needsAuth) {
-         const authId = push('Creating escrow LogicSig and funding session...', 'PENDING')
+         const authId = push('Creating escrow LogicSig and funding session (requires 0.3 ALGO: 0.2 ALGO for MBR + 0.1 for fees)...', 'PENDING')
          try {
             const authResult = await authorizeSession({
                userAddress: address,
                algodClient,
                signTransactions,
-               costPerCall: selectedModel.costMicroAlgos,
+               costPerCall: selectedModel.costMicroUSDC,
                serviceAddress: selectedModel.destinationAddress,
                roundWindow: DEFAULT_ROUND_WINDOW,
                prefundCalls: 10 // Pre-fund 10 calls for a smooth experience
             })
-            patch(authId, { status: 'OK', message: `Funded ${(authResult.fundedAmount / 1_000_000).toFixed(2)} ALGO to escrow until round ${authResult.expiryRound}` })
+            patch(authId, { status: 'OK', message: `Funded ${(authResult.fundedAmount / 1_000_000).toFixed(2)} USDC to escrow until round ${authResult.expiryRound}` })
             push(`Session authorized. You will be charged automatically per prompt from escrow.`, 'INFO')
          } catch (error) {
             const message = error instanceof Error ? error.message : 'Authorization failed'

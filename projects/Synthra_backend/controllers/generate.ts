@@ -10,6 +10,7 @@ import {
 
 import { chargeForPrompt } from '../services/charge.service';
 import { lsigStore } from '../routes/authorize';
+import { generateWithGroq, resolveGroqModel } from '../routes/baseModels';
 
 const indexerClient = new algosdk.Indexer('', 'https://testnet-idx.algonode.cloud', '');
 const PAYMENT_PROOF_SCOPE: TxProofScope = 'marketplace_generate';
@@ -126,21 +127,31 @@ export const generateRoute = async (req: Request, res: Response): Promise<void> 
         return;
       }
 
-      // Ensure it's a payment transaction
-      if (txn['tx-type'] !== 'pay') {
-        res.status(401).json({ error: 'Transaction must be a payment' });
+      // Ensure it's a USDC asset transfer transaction
+      if (txn['tx-type'] !== 'axfer') {
+        res.status(401).json({ error: 'Transaction must be an asset transfer (axfer)' });
+        return;
+      }
+
+      const usdcAssetId = Number(process.env.USDC_ASSET_ID || 10458941);
+      const assetTxn = txn.assetTransferTransaction || txn['asset-transfer-transaction'] || {};
+      
+      const assetId = Number(assetTxn.assetId ?? assetTxn['asset-id'] ?? 0);
+
+      if (assetId !== usdcAssetId) {
+        res.status(401).json({ error: 'Asset ID mismatch. Must be USDC.' });
         return;
       }
 
       // Verify the receiver destination
-      if (txn['payment-transaction'].receiver !== requiredAddress) {
+      if (assetTxn.receiver !== requiredAddress) {
         res.status(401).json({ error: 'Payment destination address mismatch' });
         return;
       }
 
       // Verify the amount paid (strict exact amount for true pay-per-use).
-      if (txn['payment-transaction'].amount !== requiredAmount) {
-        res.status(401).json({ error: `Payment amount mismatch. Expected exactly ${requiredAmount} microAlgos.` });
+      if (Number(assetTxn.amount) !== requiredAmount) {
+        res.status(401).json({ error: `Payment amount mismatch. Expected exactly ${requiredAmount} microUSDC.` });
         return;
       }
 
@@ -162,13 +173,28 @@ export const generateRoute = async (req: Request, res: Response): Promise<void> 
     if (agent.hostingType === 'internal') {
       console.log(`[Router] Routing to internal LLM (${agent.baseModel}) for agent: ${agent.name}`);
 
-      // Here you would implement your specific API call to Gemini, OpenAI, Claude, etc.
-      // E.g. using @google/genai or standard fetch.
-      // We simulate the response for the architecture prototype.
-      const simulatedLLMResponse = `[Internal LLM: ${agent.baseModel}]\n\nProcessing system prompt:\n> ${agent.systemPrompt?.substring(0, 50)}...\n\nUser prompt received:\n> ${prompt}\n\nTask executed successfully internally on Ignition infrastructure.`;
+      const groqApiKey = (process.env.GROQ_API_KEY || '').trim();
+      if (!groqApiKey) {
+         res.status(500).send('AI provider key (GROQ) not configured on backend.');
+         return;
+      }
+      
+      const resolvedModel = resolveGroqModel(agent.baseModel || '');
+
+      res.status(200);
+      res.setHeader('Content-Type', 'text/plain; charset=utf-8');
+      res.setHeader('Cache-Control', 'no-cache');
+
+      try {
+         const output = await generateWithGroq(groqApiKey, resolvedModel, prompt, 'internal-agent', 1, agent.systemPrompt || undefined);
+         res.write(output);
+      } catch (err: any) {
+         console.error('[Router] LLM Generation Error:', err);
+         res.write(`\n\n[Generation Error: ${err.message}]`);
+      }
 
       consumePaymentProof = true;
-      res.status(200).json({ result: simulatedLLMResponse });
+      res.end();
       return;
     }
 
@@ -210,8 +236,9 @@ export const generateRoute = async (req: Request, res: Response): Promise<void> 
     res.status(400).json({ error: 'Unsupported agent hosting type' });
     return;
 
-  } catch (error) {
+  } catch (error: any) {
     console.error('[Gateway] Error:', error);
+    require('fs').writeFileSync('generate_error_log.txt', error?.stack || error?.message || String(error));
     res.status(500).json({ error: 'Internal server error' });
   } finally {
     if (reservedTxId) {

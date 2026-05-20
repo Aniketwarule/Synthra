@@ -22,10 +22,12 @@ export interface DelegatedLsigParams {
   serviceAddress: string;
   /** Algorand address of the user delegating the LogicSig. */
   ownerAddress: string;
-  /** Exact payment amount per API call in microALGO. */
+  /** Exact payment amount per API call in micro-units (USDC). */
   costMicroAlgo: number;
   /** Round number after which the delegation expires. */
   expiryRound: number;
+  /** The USDC Asset ID */
+  usdcAssetId: number;
 }
 
 /** Result of compiling a TEAL program with template variables. */
@@ -155,6 +157,7 @@ function substituteTealTemplateVars(
   // Replace integer template vars (intcblock entries)
   result = result.replace(/TMPL_EXPIRY_ROUND/g, String(params.expiryRound));
   result = result.replace(/TMPL_COST_MICROALGOS/g, String(params.costMicroAlgo));
+  result = result.replace(/TMPL_USDC_ASSET_ID/g, String(params.usdcAssetId));
 
   // Also handle legacy naming from IgnitionDelegate if template was compiled with those
   result = result.replace(/TMPL_EXPIRATION_ROUND/g, String(params.expiryRound));

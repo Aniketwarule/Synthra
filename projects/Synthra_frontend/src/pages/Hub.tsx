@@ -80,7 +80,7 @@ export default function Hub() {
                 <span className="hub-model-name">{m.name}</span>
                 <span className="hub-model-price">
                   {isDisabled ? <Lock size={10} /> : null}
-                  {m.cost} ALGO/req
+                  {m.cost} USDC/req
                 </span>
               </button>
             )
@@ -161,7 +161,7 @@ export default function Hub() {
           <div className="hub-input-meta">
             <Zap size={13} />
             <span>{selectedModel.name}</span>
-            <span className="hub-input-cost">{selectedModel.cost} ALGO/req</span>
+            <span className="hub-input-cost">{selectedModel.cost} USDC/req</span>
           </div>
         )}
         <form className="hub-input-form" onSubmit={handleSubmit}>

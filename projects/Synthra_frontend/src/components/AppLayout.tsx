@@ -69,6 +69,7 @@ export default function AppLayout() {
             <NavLink
               key={item.to}
               to={item.to}
+              end={item.to === '/api'}
               className={({ isActive }) =>
                 `al-nav-item ${isActive ? 'active' : ''}`
               }

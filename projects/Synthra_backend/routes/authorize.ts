@@ -91,11 +91,14 @@ router.post('/prepare', async (req: Request, res: Response): Promise<void> => {
       roundWindow ?? DEFAULT_ROUND_WINDOW,
     );
 
+    const usdcAssetId = Number(process.env.USDC_ASSET_ID || 10458941);
+
     const compiled = await buildDelegatedLsigProgram(getAlgodClient(), {
       serviceAddress: resolvedServiceAddress,
       ownerAddress: userAddress,
       costMicroAlgo,
       expiryRound,
+      usdcAssetId,
     });
 
     res.status(200).json({

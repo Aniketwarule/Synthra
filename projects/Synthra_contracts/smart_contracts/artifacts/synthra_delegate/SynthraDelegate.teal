@@ -3,131 +3,324 @@
 
 // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts::program() -> uint64:
 main:
-    intcblock 1 TMPL_EXPIRY_ROUND 0 TMPL_COST_MICROALGOS
+    intcblock 1 0 4 TMPL_USDC_ASSET_ID TMPL_EXPIRY_ROUND TMPL_COST_MICROALGOS
     bytecblock TMPL_OWNER_ADDRESS TMPL_TREASURY_ADDRESS
     pushbytes ""
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51
-    // Txn.receiver === treasuryAddress &&
-    txn Receiver
+    dupn 3
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:48
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    txn TypeEnum
+    intc_2 // 4
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:48-49
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    bz main_bool_false@7
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:49
+    // Txn.xferAsset === usdcAsset &&
+    txn XferAsset
+    intc_3 // TMPL_USDC_ASSET_ID
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:48-49
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    bz main_bool_false@7
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:50
+    // Txn.assetReceiver === treasuryAddress &&
+    txn AssetReceiver
     bytec_1 // TMPL_TREASURY_ADDRESS
     ==
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51-52
-    // Txn.receiver === treasuryAddress &&
-    // Txn.amount === costMicroAlgos &&
-    bz main_bool_false@5
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:52
-    // Txn.amount === costMicroAlgos &&
-    txn Amount
-    intc_3 // TMPL_COST_MICROALGOS
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:48-50
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.assetReceiver === treasuryAddress &&
+    bz main_bool_false@7
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51
+    // Txn.assetAmount === costUSDC &&
+    txn AssetAmount
+    intc 5 // TMPL_COST_MICROALGOS
     ==
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51-52
-    // Txn.receiver === treasuryAddress &&
-    // Txn.amount === costMicroAlgos &&
-    bz main_bool_false@5
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:53
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:48-51
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.assetReceiver === treasuryAddress &&
+    // Txn.assetAmount === costUSDC &&
+    bz main_bool_false@7
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:52
     // Txn.lastValid <= expiryRound &&
     txn LastValid
-    intc_1 // TMPL_EXPIRY_ROUND
+    intc 4 // TMPL_EXPIRY_ROUND
     <=
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51-53
-    // Txn.receiver === treasuryAddress &&
-    // Txn.amount === costMicroAlgos &&
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:48-52
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.assetReceiver === treasuryAddress &&
+    // Txn.assetAmount === costUSDC &&
     // Txn.lastValid <= expiryRound &&
-    bz main_bool_false@5
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:54
-    // Txn.closeRemainderTo === Global.zeroAddress
-    txn CloseRemainderTo
+    bz main_bool_false@7
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:53
+    // Txn.assetCloseTo === Global.zeroAddress
+    txn AssetCloseTo
     global ZeroAddress
     ==
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:51-54
-    // Txn.receiver === treasuryAddress &&
-    // Txn.amount === costMicroAlgos &&
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:48-53
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.assetReceiver === treasuryAddress &&
+    // Txn.assetAmount === costUSDC &&
     // Txn.lastValid <= expiryRound &&
-    // Txn.closeRemainderTo === Global.zeroAddress
-    bz main_bool_false@5
+    // Txn.assetCloseTo === Global.zeroAddress
+    bz main_bool_false@7
+    intc_0 // 1
+    bury 3
+
+main_bool_merge@8:
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:59
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    txn TypeEnum
+    intc_2 // 4
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:59-60
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    bz main_bool_false@14
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:60
+    // Txn.xferAsset === usdcAsset &&
+    txn XferAsset
+    intc_3 // TMPL_USDC_ASSET_ID
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:59-60
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    bz main_bool_false@14
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:61
+    // Txn.assetReceiver === Txn.sender &&
+    txn AssetReceiver
+    txn Sender
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:59-61
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.assetReceiver === Txn.sender &&
+    bz main_bool_false@14
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:62
+    // Txn.assetAmount === Uint64(0) &&
+    txn AssetAmount
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:59-62
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.assetReceiver === Txn.sender &&
+    // Txn.assetAmount === Uint64(0) &&
+    bnz main_bool_false@14
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:63
+    // Txn.assetCloseTo === Global.zeroAddress
+    txn AssetCloseTo
+    global ZeroAddress
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:59-63
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.assetReceiver === Txn.sender &&
+    // Txn.assetAmount === Uint64(0) &&
+    // Txn.assetCloseTo === Global.zeroAddress
+    bz main_bool_false@14
     intc_0 // 1
     bury 1
 
-main_bool_merge@6:
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58
+main_bool_merge@15:
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:67
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    txn TypeEnum
+    intc_2 // 4
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:67-68
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    bz main_bool_false@22
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:68
+    // Txn.xferAsset === usdcAsset &&
+    txn XferAsset
+    intc_3 // TMPL_USDC_ASSET_ID
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:67-68
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    bz main_bool_false@22
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:69
     // Txn.firstValid > expiryRound &&
     txn FirstValid
-    intc_1 // TMPL_EXPIRY_ROUND
+    intc 4 // TMPL_EXPIRY_ROUND
     >
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58-59
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:67-69
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
     // Txn.firstValid > expiryRound &&
-    // Txn.receiver === ownerAddress &&
-    bz main_bool_false@11
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:59
+    bz main_bool_false@22
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:70
+    // Txn.assetReceiver === ownerAddress &&
+    txn AssetReceiver
+    bytec_0 // TMPL_OWNER_ADDRESS
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:67-70
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.firstValid > expiryRound &&
+    // Txn.assetReceiver === ownerAddress &&
+    bz main_bool_false@22
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:71
+    // Txn.assetAmount === Uint64(0) &&
+    txn AssetAmount
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:67-71
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.firstValid > expiryRound &&
+    // Txn.assetReceiver === ownerAddress &&
+    // Txn.assetAmount === Uint64(0) &&
+    bnz main_bool_false@22
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:72
+    // Txn.assetCloseTo === ownerAddress
+    txn AssetCloseTo
+    bytec_0 // TMPL_OWNER_ADDRESS
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:67-72
+    // Txn.typeEnum === TransactionType.AssetTransfer &&
+    // Txn.xferAsset === usdcAsset &&
+    // Txn.firstValid > expiryRound &&
+    // Txn.assetReceiver === ownerAddress &&
+    // Txn.assetAmount === Uint64(0) &&
+    // Txn.assetCloseTo === ownerAddress
+    bz main_bool_false@22
+    intc_0 // 1
+    bury 2
+
+main_bool_merge@23:
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:76
+    // Txn.typeEnum === TransactionType.Payment &&
+    txn TypeEnum
+    intc_0 // 1
+    ==
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:76-77
+    // Txn.typeEnum === TransactionType.Payment &&
+    // Txn.firstValid > expiryRound &&
+    bz main_bool_false@29
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:77
+    // Txn.firstValid > expiryRound &&
+    txn FirstValid
+    intc 4 // TMPL_EXPIRY_ROUND
+    >
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:76-77
+    // Txn.typeEnum === TransactionType.Payment &&
+    // Txn.firstValid > expiryRound &&
+    bz main_bool_false@29
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:78
     // Txn.receiver === ownerAddress &&
     txn Receiver
     bytec_0 // TMPL_OWNER_ADDRESS
     ==
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58-59
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:76-78
+    // Txn.typeEnum === TransactionType.Payment &&
     // Txn.firstValid > expiryRound &&
     // Txn.receiver === ownerAddress &&
-    bz main_bool_false@11
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:60
+    bz main_bool_false@29
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:79
     // Txn.amount === Uint64(0) &&
     txn Amount
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58-60
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:76-79
+    // Txn.typeEnum === TransactionType.Payment &&
     // Txn.firstValid > expiryRound &&
     // Txn.receiver === ownerAddress &&
     // Txn.amount === Uint64(0) &&
-    bnz main_bool_false@11
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:61
+    bnz main_bool_false@29
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:80
     // Txn.closeRemainderTo === ownerAddress
     txn CloseRemainderTo
     bytec_0 // TMPL_OWNER_ADDRESS
     ==
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:58-61
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:76-80
+    // Txn.typeEnum === TransactionType.Payment &&
     // Txn.firstValid > expiryRound &&
     // Txn.receiver === ownerAddress &&
     // Txn.amount === Uint64(0) &&
     // Txn.closeRemainderTo === ownerAddress
-    bz main_bool_false@11
+    bz main_bool_false@29
     intc_0 // 1
+    bury 4
 
-main_bool_merge@12:
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:64
-    // assert(Txn.typeEnum === TransactionType.Payment, 'Only payment transactions are allowed')
-    txn TypeEnum
-    intc_0 // 1
-    ==
-    assert // Only payment transactions are allowed
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:65
-    // assert(Global.groupSize === Uint64(1), 'Grouped transactions are not allowed')
-    global GroupSize
-    intc_0 // 1
-    ==
-    assert // Grouped transactions are not allowed
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:68
-    // assert(Txn.fee <= Uint64(1_000), 'Fee too high')
+main_bool_merge@30:
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:84
+    // assert(Txn.fee <= Uint64(2_000), 'Fee too high')
     txn Fee
-    pushint 1000 // 1000
+    pushint 2000 // 2000
     <=
     assert // Fee too high
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:69
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:85
     // assert(Txn.rekeyTo === Global.zeroAddress, 'Rekey is not allowed')
     txn RekeyTo
     global ZeroAddress
     ==
     assert // Rekey is not allowed
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:72
-    // assert(isPromptPayment || isExpiryCloseOut, 'Transaction does not match session policy')
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:88
+    // if (isPromptPayment || isUSDCCloseOut || isAlgoCloseOut) {
+    dig 2
+    bnz main_if_body@33
+    dig 1
+    bnz main_if_body@33
+    dig 3
+    bz main_else_body@34
+
+main_if_body@33:
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:89
+    // assert(Global.groupSize <= Uint64(2), 'Invalid group size for action')
+    global GroupSize
+    pushint 2 // 2
+    <=
+    assert // Invalid group size for action
+
+main_after_if_else@37:
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:95
+    // assert(isPromptPayment || isUSDCOptIn || isUSDCCloseOut || isAlgoCloseOut, 'Transaction does not match session policy')
+    dig 2
     dig 1
     ||
+    dig 2
+    ||
+    dig 4
+    ||
     assert // Transaction does not match session policy
-    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:74
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:97
     // return true
     intc_0 // 1
     return
 
-main_bool_false@11:
-    intc_2 // 0
-    b main_bool_merge@12
+main_else_body@34:
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:90
+    // } else if (isUSDCOptIn) {
+    dup
+    bz main_after_if_else@37
+    // smart_contracts/synthra_delegate/SynthraDelegate.algo.ts:91
+    // assert(Global.groupSize <= Uint64(3), 'OptIn must be part of a funding group')
+    global GroupSize
+    pushint 3 // 3
+    <=
+    assert // OptIn must be part of a funding group
+    b main_after_if_else@37
 
-main_bool_false@5:
-    intc_2 // 0
+main_bool_false@29:
+    intc_1 // 0
+    bury 4
+    b main_bool_merge@30
+
+main_bool_false@22:
+    intc_1 // 0
+    bury 2
+    b main_bool_merge@23
+
+main_bool_false@14:
+    intc_1 // 0
     bury 1
-    b main_bool_merge@6
+    b main_bool_merge@15
+
+main_bool_false@7:
+    intc_1 // 0
+    bury 3
+    b main_bool_merge@8

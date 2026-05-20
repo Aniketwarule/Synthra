@@ -1,4 +1,3 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
 import { Router, Response } from 'express';
 import { L402VerifiedRequest, verifyIgnitionL402Payment } from '../middleware/verifyIgnitionL402Payment';
 import crypto from 'crypto';
@@ -8,23 +7,11 @@ type BaseModelsGenerateBody = {
   model?: string;
 };
 
-const DEFAULT_GEMINI_MODEL = 'gemini-2.0-flash';
 const DEFAULT_GROQ_MODEL = 'llama-3.1-8b-instant';
 
 const sleep = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms));
 
-const resolveGeminiModel = (requestedModel: string): string => {
-  const aliases: Record<string, string> = {
-    'gemini-1.5-pro': 'gemini-2.0-flash',
-    'gemini-1.5-pro-latest': 'gemini-2.0-flash',
-    'gpt-4o': DEFAULT_GEMINI_MODEL,
-    'claude-3-opus': DEFAULT_GEMINI_MODEL,
-  };
-
-  return aliases[requestedModel] || requestedModel;
-};
-
-const resolveGroqModel = (requestedModel: string): string => {
+export const resolveGroqModel = (requestedModel: string): string => {
   const aliases: Record<string, string> = {
     'gemini-2.0-flash': DEFAULT_GROQ_MODEL,
     'gpt-4o': DEFAULT_GROQ_MODEL,
@@ -34,12 +21,13 @@ const resolveGroqModel = (requestedModel: string): string => {
   return aliases[requestedModel] || requestedModel;
 };
 
-const generateWithGroq = async (
+export const generateWithGroq = async (
   apiKey: string,
   modelName: string,
   prompt: string,
   requestId: string,
   attempt: number,
+  systemPrompt?: string,
 ): Promise<string> => {
   console.info(`[BaseModels][${requestId}] AI attempt ${attempt} using provider=groq model=${modelName}`);
 
@@ -51,7 +39,9 @@ const generateWithGroq = async (
     },
     body: JSON.stringify({
       model: modelName,
-      messages: [{ role: 'user', content: prompt }],
+      messages: systemPrompt 
+        ? [{ role: 'system', content: systemPrompt }, { role: 'user', content: prompt }]
+        : [{ role: 'user', content: prompt }],
       temperature: 0.7,
       stream: false,
     }),
@@ -108,16 +98,15 @@ router.post('/generate', verifyIgnitionL402Payment, async (req: L402VerifiedRequ
   }
 
   const groqApiKey = (process.env.GROQ_API_KEY || '').trim();
-  const geminiApiKey = (process.env.GEMINI_API_KEY || '').trim();
 
-  if (!groqApiKey && !geminiApiKey) {
+  if (!groqApiKey) {
     req.finalizeIgnitionPayment?.(false);
-    res.status(500).json({ error: 'No AI provider key configured. Set GROQ_API_KEY or GEMINI_API_KEY.' });
+    res.status(500).json({ error: 'No AI provider key configured. Set GROQ_API_KEY.' });
     return;
   }
 
   try {
-    const preferredProvider = groqApiKey ? 'groq' : 'gemini';
+    const preferredProvider = 'groq';
 
     // Stream plain text chunks so frontend receives token-by-token output.
     res.status(200);
@@ -155,38 +144,6 @@ router.post('/generate', verifyIgnitionL402Payment, async (req: L402VerifiedRequ
       }
 
       res.write(output);
-    } else {
-      const genAI = new GoogleGenerativeAI(geminiApiKey);
-      const primaryModelName = resolveGeminiModel(model);
-      res.setHeader('X-Ignition-Provider', 'gemini');
-      res.setHeader('X-Ignition-Model', primaryModelName);
-
-      const streamFromModel = async (modelName: string) => {
-        aiCallAttempts += 1;
-        console.info(`[BaseModels][${requestId}] AI attempt ${aiCallAttempts} using provider=gemini model=${modelName}`);
-        const geminiModel = genAI.getGenerativeModel({ model: modelName });
-        const streamResult = await geminiModel.generateContentStream(prompt);
-        for await (const chunk of streamResult.stream) {
-          const text = chunk.text();
-          if (text) {
-            res.write(text);
-          }
-        }
-      };
-
-      try {
-        await streamFromModel(primaryModelName);
-      } catch (error) {
-        const status = (error as { status?: number })?.status;
-        const fallbackModel = DEFAULT_GEMINI_MODEL;
-
-        if (status === 404 && primaryModelName !== fallbackModel) {
-          console.warn(`[BaseModels] Model ${primaryModelName} unavailable, falling back to ${fallbackModel}`);
-          await streamFromModel(fallbackModel);
-        } else {
-          throw error;
-        }
-      }
     }
 
     consumePaymentProof = true;

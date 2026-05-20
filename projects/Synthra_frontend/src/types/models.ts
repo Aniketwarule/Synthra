@@ -13,12 +13,12 @@ export interface AIModel {
   id: string
   name: string
   description: string
-  /** Cost in ALGO per request (legacy) */
+  /** Cost in USDC per request (legacy) */
   cost: number
-  /** Cost in ALGO per 1000 tokens */
+  /** Cost in USDC per 1000 tokens */
   tokenPrice: number
-  /** Cost in microAlgos (1 ALGO = 1,000,000) */
-  costMicroAlgos: number
+  /** Cost in micro-units of USDC (1 USDC = 1,000,000 microUSDC) */
+  costMicroUSDC: number
   /** Where the payment goes */
   destinationType: ModelDestination
   /** Algorand address to receive payment */
@@ -39,12 +39,12 @@ export const TREASURY_ADDRESS =
 
 export const BASE_MODELS: AIModel[] = [
   {
-    cost: 0.1,
-    tokenPrice: 0.1, // 0.1 ALGO per prompt
+    cost: 0.005,
+    tokenPrice: 0.005, // 0.005 USDC per prompt
     id: 'gemini-2.0-flash',
     name: 'Gemini 2.0 Flash',
     description: "Google's fast multimodal model",
-    costMicroAlgos: 100_000,
+    costMicroUSDC: 5_000,
     destinationType: 'treasury',
     destinationAddress: TREASURY_ADDRESS,
     category: 'base',
@@ -53,9 +53,9 @@ export const BASE_MODELS: AIModel[] = [
     id: 'gpt-4o',
     name: 'GPT-4o',
     description: "OpenAI's flagship model",
-    cost: 0.5,
-    tokenPrice: 0.5, // 0.5 ALGO per prompt
-    costMicroAlgos: 500_000,
+    cost: 0.01,
+    tokenPrice: 0.01, // 0.01 USDC per prompt
+    costMicroUSDC: 10_000,
     destinationType: 'treasury',
     destinationAddress: TREASURY_ADDRESS,
     category: 'base',
@@ -64,9 +64,9 @@ export const BASE_MODELS: AIModel[] = [
     id: 'claude-3-opus',
     name: 'Claude 3 Opus',
     description: "Anthropic's most capable model",
-    cost: 0.8,
-    tokenPrice: 0.8, // 0.8 ALGO per prompt
-    costMicroAlgos: 800_000,
+    cost: 0.02,
+    tokenPrice: 0.02, // 0.02 USDC per prompt
+    costMicroUSDC: 20_000,
     destinationType: 'treasury',
     destinationAddress: TREASURY_ADDRESS,
     category: 'base',
@@ -77,29 +77,53 @@ export const BASE_MODELS: AIModel[] = [
 
 export const COMMUNITY_AGENTS: AIModel[] = [
   {
-    id: 'sc-auditor-alice',
-    name: 'Smart Contract Auditor',
-    description: 'TEAL/PyTeal security audit audit agent',
-    cost: 0.01,
-    tokenPrice: 0.1, // 0.1 ALGO per 1000 tokens
-    costMicroAlgos: 500_000,
+    id: 'agent_storyweaver',
+    name: 'Story Weaver',
+    description: 'Expert creative writer and world builder.',
+    cost: 0.002,
+    tokenPrice: 0.002,
+    costMicroUSDC: 2_000,
     destinationType: 'creator',
-    destinationAddress: 'ALICEAUDITOR00000000000000000000000000000000000000000000000000',
-    creator: '@dev_alice',
+    destinationAddress: TREASURY_ADDRESS, // Use treasury address so payments resolve successfully
+    creator: '@writer_pro',
     category: 'community',
   },
   {
-    id: 'web3-copywriter-bob',
-    name: 'Web3 Copywriter',
-    description: 'Marketing copy for Web3 projects',
-    cost: 0.04,
-    tokenPrice: 0.04, // 0.04 ALGO per 1000 tokens
-    costMicroAlgos: 200_000,
+    id: 'agent_code_ninja',
+    name: 'Code Ninja',
+    description: 'Advanced Python & Rust developer assistant.',
+    cost: 0.005,
+    tokenPrice: 0.005,
+    costMicroUSDC: 5_000,
     destinationType: 'creator',
-    destinationAddress: 'BOBCOPYWRITER00000000000000000000000000000000000000000000000000',
-    creator: '@bob',
+    destinationAddress: TREASURY_ADDRESS,
+    creator: '@algo_dev',
     category: 'community',
   },
+  {
+    id: 'agent_defi_analyst',
+    name: 'DeFi Analyst',
+    description: 'Analyzes charts and tokenomics for Web3 projects.',
+    cost: 0.001,
+    tokenPrice: 0.001,
+    costMicroUSDC: 1_000,
+    destinationType: 'creator',
+    destinationAddress: TREASURY_ADDRESS,
+    creator: '@bullish_bob',
+    category: 'community',
+  },
+  {
+    id: 'agent_translator_bot',
+    name: 'Polyglot Translator',
+    description: 'Real-time contextual translations for 50+ languages.',
+    cost: 0.001,
+    tokenPrice: 0.001,
+    costMicroUSDC: 1_000,
+    destinationType: 'creator',
+    destinationAddress: TREASURY_ADDRESS,
+    creator: '@global_reach',
+    category: 'community',
+  }
 ]
 
 export const ALL_MODELS: AIModel[] = [...BASE_MODELS, ...COMMUNITY_AGENTS]

@@ -204,11 +204,16 @@ export const listAgents = async (): Promise<AgentEntity[]> => {
 export const findAgentById = async (lookupId: string): Promise<AgentEntity | null> => {
   const supabase = getSupabaseClient();
 
-  const byPrimaryKey = await supabase
-    .from('agents')
-    .select('*')
-    .eq('id', lookupId)
-    .maybeSingle();
+  const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i.test(lookupId);
+
+  let byPrimaryKey: any = { data: null, error: null };
+  if (isUuid) {
+    byPrimaryKey = await supabase
+      .from('agents')
+      .select('*')
+      .eq('id', lookupId)
+      .maybeSingle();
+  }
 
   if (byPrimaryKey.error && isAgentsTableMissingError(byPrimaryKey.error.message)) {
     warnInMemoryFallbackOnce();

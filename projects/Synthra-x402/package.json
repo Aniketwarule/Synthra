@@ -1,0 +1,18 @@
+{
+  "name": "synthra-x402",
+  "version": "1.0.2",
+  "description": "Synthra API SDK using x402 and Algorand USDC",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@x402-avm/avm": "^2.6.1",
+    "@x402-avm/core": "^2.6.1",
+    "@x402-avm/express": "^2.6.1",
+    "@x402-avm/extensions": "^2.6.1",
+    "@x402-avm/fetch": "^2.6.1",
+    "algosdk": "^3.5.2"
+  }
+}

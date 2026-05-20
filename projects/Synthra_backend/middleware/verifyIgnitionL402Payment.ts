@@ -31,6 +31,16 @@ type IndexerTxn = {
     receiver?: string;
     amount?: number;
   };
+  assetTransferTransaction?: {
+    receiver?: string;
+    amount?: number;
+    assetId?: number;
+  };
+  ['asset-transfer-transaction']?: {
+    receiver?: string;
+    amount?: number;
+    'asset-id'?: number;
+  };
 };
 
 export type VerifiedIgnitionPayment = {
@@ -49,11 +59,11 @@ export type L402VerifiedRequest = Request & {
 const PAYMENT_PROOF_SCOPE: TxProofScope = 'base_models_generate';
 
 const BASE_MODEL_PRICE_MICROALGOS: Record<string, number> = {
-  'gemini-2.0-flash': 100_000,
-  'gemini-1.5-pro': 100_000,
-  'gemini-1.5-pro-latest': 100_000,
-  'gpt-4o': 500_000,
-  'claude-3-opus': 800_000,
+  'gemini-2.0-flash': 5_000,
+  'gemini-1.5-pro': 5_000,
+  'gemini-1.5-pro-latest': 5_000,
+  'gpt-4o': 10_000,
+  'claude-3-opus': 20_000,
 };
 
 const DEFAULT_INDEXER_URL = 'https://testnet-idx.algonode.cloud';
@@ -117,6 +127,18 @@ const getPaymentAmount = (txn: IndexerTxn): number => {
   return Number(txn.paymentTransaction?.amount ?? txn['payment-transaction']?.amount ?? 0);
 };
 
+const getAssetTransferReceiver = (txn: IndexerTxn): string => {
+  return String(txn.assetTransferTransaction?.receiver ?? txn['asset-transfer-transaction']?.receiver ?? '');
+};
+
+const getAssetTransferAmount = (txn: IndexerTxn): number => {
+  return Number(txn.assetTransferTransaction?.amount ?? txn['asset-transfer-transaction']?.amount ?? 0);
+};
+
+const getAssetTransferId = (txn: IndexerTxn): number => {
+  return Number(txn.assetTransferTransaction?.assetId ?? txn['asset-transfer-transaction']?.['asset-id'] ?? 0);
+};
+
 const normalizeGroupId = (group: IndexerTxn['group']): string => {
   if (!group) return '';
   if (typeof group === 'string') return group;
@@ -143,13 +165,13 @@ const withRetry = async <T>(operation: () => Promise<T>, attempts = 6, delayMs =
 };
 
 const respondPaymentRequired = (res: Response, amountMicroAlgos: number, treasuryAddress: string): void => {
-  const amountAlgos = amountMicroAlgos / 1_000_000;
+  const amountUSDC = amountMicroAlgos / 1_000_000;
 
   res.status(402).json({
     status: 402,
     amountMicroAlgos,
-    amountAlgos,
-    requiredAmountAlgo: amountAlgos,
+    amountUSDC,
+    requiredAmountUSDC: amountUSDC,
     creatorAddress: treasuryAddress,
     destinationAddress: treasuryAddress,
     message: 'Payment required via Ignition payment flow',
@@ -344,11 +366,14 @@ export const verifyIgnitionL402Payment = async (
       return;
     }
 
+    const usdcAssetId = Number(process.env.USDC_ASSET_ID || 10458941);
+
     const qualifyingPayment = groupTxns.find((txn) => {
-      if (getTxType(txn) !== 'pay') return false;
+      if (getTxType(txn) !== 'axfer') return false;
       if (getConfirmedRound(txn) <= 0) return false;
-      const receiver = getPaymentReceiver(txn);
-      const amount = getPaymentAmount(txn);
+      if (getAssetTransferId(txn) !== usdcAssetId) return false;
+      const receiver = getAssetTransferReceiver(txn);
+      const amount = getAssetTransferAmount(txn);
       return receiver === treasuryAddress && amount === expectedAmountMicroAlgos;
     });
 
@@ -361,12 +386,19 @@ export const verifyIgnitionL402Payment = async (
       txId,
       groupId,
       payer: qualifyingPayment.sender || 'unknown',
-      amountMicroAlgos: getPaymentAmount(qualifyingPayment),
+      amountMicroAlgos: getAssetTransferAmount(qualifyingPayment),
       confirmedRound,
     };
-  } else if (txType === 'pay') {
-    const receiver = getPaymentReceiver(onChainTxn);
-    const amount = getPaymentAmount(onChainTxn);
+  } else if (txType === 'axfer') {
+    const usdcAssetId = Number(process.env.USDC_ASSET_ID || 10458941);
+    
+    if (getAssetTransferId(onChainTxn) !== usdcAssetId) {
+      respondUnauthorized(res, txId, 'Asset ID mismatch for direct transfer');
+      return;
+    }
+
+    const receiver = getAssetTransferReceiver(onChainTxn);
+    const amount = getAssetTransferAmount(onChainTxn);
 
     if (receiver !== treasuryAddress) {
       respondUnauthorized(res, txId, 'Direct payment receiver does not match treasury');
@@ -386,7 +418,7 @@ export const verifyIgnitionL402Payment = async (
       confirmedRound,
     };
   } else {
-    respondUnauthorized(res, txId, 'txId must reference either a payment or application call transaction');
+    respondUnauthorized(res, txId, 'txId must reference either an axfer or application call transaction');
     return;
   }
 

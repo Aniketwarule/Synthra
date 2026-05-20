@@ -8,6 +8,8 @@ import Marketplace from './pages/Marketplace'
 import MarketplaceChat from './pages/MarketplaceChat'
 import Publish from './pages/Publish'
 import ApiMarketplace from './pages/ApiMarketplace'
+import ApiDashboard from './pages/ApiDashboard'
+import DeployApi from './pages/DeployApi'
 import ApiKey from './pages/ApiKey'
 import Docs from './pages/Docs'
 
@@ -27,6 +29,8 @@ export default function App() {
               <Route path="/marketplace/:agentId/chat" element={<MarketplaceChat />} />
               <Route path="/publish" element={<Publish />} />
               <Route path="/api" element={<ApiMarketplace />} />
+              <Route path="/api-dashboard" element={<ApiDashboard />} />
+              <Route path="/deploy-api" element={<DeployApi />} />
               <Route path="/api/keys" element={<ApiKey />} />
               <Route path="/docs" element={<Docs />} />
             </Route>

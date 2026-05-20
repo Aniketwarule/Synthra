@@ -101,30 +101,63 @@ export async function authorizeSession(
   // The escrow address is the hash of the compiled program
   const escrowAddress = prepareData.programHash;
 
-  // --- Step 2: Build and sign a funding transaction to the escrow ---
-  const fundAmount = costPerCall * prefundCalls;
-  // Add minimum balance for the escrow (100,000 µALGO) + buffer for fees
-  const totalFundAmount = fundAmount + 110_000;
+  // --- Step 2: Build and sign a funding transaction group ---
+  const usdcAssetId = Number(import.meta.env.VITE_USDC_ASSET_ID || 10458941);
+  const usdcFundAmount = costPerCall * prefundCalls;
+  // 0.3 ALGO for MBR and fees (buffer for Opt-In fee + 100k MBR + prompt fees)
+  const algoFundAmount = 300_000;
 
   const suggestedParams = await algodClient.getTransactionParams().do();
 
-  const fundTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+  // Txn 1: Fund ALGO to escrow
+  const algoFundTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
     sender: userAddress,
     receiver: escrowAddress,
-    amount: BigInt(totalFundAmount),
+    amount: BigInt(algoFundAmount),
     suggestedParams,
     note: new Uint8Array(Buffer.from(`synthra:session:${prepareData.expiryRound}`)),
   });
 
-  // Sign via wallet (works with ALL wallets — Pera, Defly, etc.)
-  const signedTxns = await signTransactions([fundTxn]);
-  const signedTxn = signedTxns[0];
-  if (!signedTxn) {
+  // Txn 2: Escrow opts into USDC
+  const optInTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+    sender: escrowAddress,
+    receiver: escrowAddress,
+    amount: BigInt(0),
+    assetIndex: usdcAssetId,
+    suggestedParams,
+  });
+
+  // Txn 3: Fund USDC to escrow
+  const usdcFundTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
+    sender: userAddress,
+    receiver: escrowAddress,
+    amount: BigInt(usdcFundAmount),
+    assetIndex: usdcAssetId,
+    suggestedParams,
+  });
+
+  const txns = [algoFundTxn, optInTxn, usdcFundTxn];
+  const group = algosdk.assignGroupID(txns);
+
+  // Sign via wallet (user signs Txn 0 and Txn 2)
+  const signedUserTxns = await signTransactions(group, [0, 2]);
+  
+  const signedAlgoFund = signedUserTxns[0];
+  const signedUsdcFund = signedUserTxns[2] || signedUserTxns[1]; // Depending on if returned array maps to group or indexes
+
+  if (!signedAlgoFund || !signedUsdcFund) {
     throw new Error('Transaction signing was cancelled or returned empty.');
   }
 
-  // Submit the funding transaction
-  const submitRes = await algodClient.sendRawTransaction(signedTxn).do() as any;
+  // Sign Txn 1 manually with the LogicSig
+  const programBytes = new Uint8Array(Buffer.from(prepareData.programBase64, 'base64'));
+  const lsigAccount = new algosdk.LogicSigAccount(programBytes);
+  const signedOptInTxn = algosdk.signLogicSigTransactionObject(group[1], lsigAccount).blob;
+
+  const finalGroup = [signedAlgoFund, signedOptInTxn, signedUsdcFund];
+
+  // Submit the grouped funding transaction
+  const submitRes = await algodClient.sendRawTransaction(finalGroup).do() as any;
   const txId = submitRes.txId || submitRes.txid;
   await algosdk.waitForConfirmation(algodClient, txId, 4);
 
@@ -140,7 +173,7 @@ export async function authorizeSession(
       fundingTxId: txId,
       expiryRound: prepareData.expiryRound,
       costMicroAlgo: prepareData.costMicroAlgo,
-      fundedAmount: totalFundAmount,
+      fundedAmount: usdcFundAmount,
     }),
   });
 
@@ -155,7 +188,7 @@ export async function authorizeSession(
     localStorage.setItem(STORAGE_KEYS.SESSION_COST, String(prepareData.costMicroAlgo));
     localStorage.setItem(STORAGE_KEYS.USER_ADDRESS, userAddress);
     localStorage.setItem(STORAGE_KEYS.ESCROW_ADDRESS, escrowAddress);
-    localStorage.setItem(STORAGE_KEYS.FUNDED_AMOUNT, String(totalFundAmount));
+    localStorage.setItem(STORAGE_KEYS.FUNDED_AMOUNT, String(usdcFundAmount));
   } catch {
     console.warn('[lsig-auth] Could not persist session to localStorage');
   }
@@ -166,7 +199,7 @@ export async function authorizeSession(
     expiryRound: prepareData.expiryRound,
     expiryTimeApprox,
     escrowAddress,
-    fundedAmount: totalFundAmount,
+    fundedAmount: usdcFundAmount,
   };
 }
 

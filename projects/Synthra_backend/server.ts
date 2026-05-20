@@ -45,6 +45,10 @@ app.post('/api/apikeys/hit', hitApiKey);          // Legacy simple prompt endpoi
 app.get('/api/apikeys/stats', getApiKeyStats);
 app.use('/api', agentRoutes);
 
+// Marketplace (Facilitator) Routes
+import marketplaceRouter from './routes/marketplace';
+app.use('/api/marketplace', marketplaceRouter);
+
 // Delegated LogicSig session authorization
 app.use('/api/authorize', authorizeRouter);
 

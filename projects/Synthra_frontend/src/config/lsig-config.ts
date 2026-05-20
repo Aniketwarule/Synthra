@@ -43,15 +43,15 @@ export const DEFAULT_ROUND_WINDOW = ROUND_WINDOWS.CHAT_APP;
 // ---------------------------------------------------------------------------
 
 /**
- * Per-model pricing in microALGO.
- * Must match the backend's BASE_MODEL_PRICE_MICROALGOS.
+ * Per-model pricing in micro-units of USDC.
+ * Must match the backend's BASE_MODEL_PRICE_MICROALGOS (or equivalent USDC variable).
  */
 export const MODEL_COSTS = {
-  'gemini-2.0-flash': 100_000,
-  'gemini-1.5-pro': 100_000,
-  'gemini-1.5-pro-latest': 100_000,
-  'gpt-4o': 500_000,
-  'claude-3-opus': 800_000,
+  'gemini-2.0-flash': 5_000,
+  'gemini-1.5-pro': 5_000,
+  'gemini-1.5-pro-latest': 5_000,
+  'gpt-4o': 10_000,
+  'claude-3-opus': 20_000,
 } as const;
 
 export type SupportedModel = keyof typeof MODEL_COSTS;

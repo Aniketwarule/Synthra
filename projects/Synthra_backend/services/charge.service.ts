@@ -143,12 +143,15 @@ export async function chargeForPrompt(params: ChargeParams): Promise<ChargeResul
     suggestedParams.lastValid = lsigRecord.expiryRound;
   }
 
-  const paymentTxn = algosdk.makePaymentTxnWithSuggestedParamsFromObject({
+  const usdcAssetId = Number(process.env.USDC_ASSET_ID || 10458941);
+
+  const paymentTxn = algosdk.makeAssetTransferTxnWithSuggestedParamsFromObject({
     sender: lsigRecord.escrowAddress,
     receiver: serviceAddress,
     amount: BigInt(costMicroAlgo),
+    assetIndex: usdcAssetId,
     suggestedParams,
-    closeRemainderTo: undefined, // ZeroAddress — no close-out
+    closeRemainderTo: undefined, // undefined for assetCloseTo
     rekeyTo: undefined,         // ZeroAddress — no rekey
   });
 

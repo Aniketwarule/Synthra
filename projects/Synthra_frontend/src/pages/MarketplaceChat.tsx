@@ -20,7 +20,7 @@ const normalizeAgentToModel = (agent: any): AIModel => {
     description: String(agent?.description ?? 'Community AI agent'),
     cost: Number.isFinite(priceAlgo) && priceAlgo > 0 ? priceAlgo : 0.1,
     tokenPrice: Number.isFinite(priceAlgo) && priceAlgo > 0 ? priceAlgo : 0.1,
-    costMicroAlgos: toMicroAlgos(Number.isFinite(priceAlgo) && priceAlgo > 0 ? priceAlgo : 0.1),
+    costMicroUSDC: toMicroAlgos(Number.isFinite(priceAlgo) && priceAlgo > 0 ? priceAlgo : 0.1),
     destinationType: 'creator',
     destinationAddress: String(agent?.creatorWallet ?? agent?.creator_wallet ?? agent?.destinationAddress ?? ''),
     creator: agent?.creator ? String(agent.creator) : undefined,
@@ -116,7 +116,7 @@ export default function MarketplaceChat() {
         </div>
         <div className="mpc-agent-meta">
           {agent.creator && <span className="mpc-creator">{agent.creator}</span>}
-          <span className="mpc-price"><Zap size={12} /> {agent.cost} ALGO/req</span>
+          <span className="mpc-price"><Zap size={12} /> {agent.cost} USDC/req</span>
         </div>
       </div>
 

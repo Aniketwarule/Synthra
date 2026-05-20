@@ -1,392 +1,306 @@
-import { useState } from 'react'
-import { BookOpen, Terminal, Key, Code2, Zap, Shield, Copy, Check, ChevronRight } from 'lucide-react'
+import { useState } from 'react';
+import { BookOpen, Terminal, Key, Code2, Zap, Shield, Copy, Check, ChevronRight, Globe, Code } from 'lucide-react';
 
-const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080'
+const API_BASE = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
 
 interface DocSection {
-  id: string
-  label: string
-  icon: typeof BookOpen
+  id: string;
+  label: string;
+  icon: typeof BookOpen;
 }
 
 const SECTIONS: DocSection[] = [
   { id: 'quickstart', label: 'Quick Start', icon: Zap },
   { id: 'installation', label: 'SDK Installation', icon: Terminal },
   { id: 'authentication', label: 'Authentication', icon: Shield },
-  { id: 'api-reference', label: 'API Reference', icon: Code2 },
+  { id: 'marketplace', label: 'API Marketplace', icon: Globe },
+  { id: 'api-reference', label: 'REST API', icon: Code2 },
   { id: 'api-keys', label: 'API Keys', icon: Key },
-  { id: 'agents', label: 'For Agents', icon: BookOpen },
-]
+];
 
 function CodeBlock({ code, lang = 'bash' }: { code: string; lang?: string }) {
-  const [copied, setCopied] = useState(false)
+  const [copied, setCopied] = useState(false);
+  
   const copy = () => {
-    navigator.clipboard.writeText(code)
-    setCopied(true)
-    setTimeout(() => setCopied(false), 2000)
-  }
+    navigator.clipboard.writeText(code);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  };
+  
   return (
-    <div className="doc-code">
-      <div className="doc-code-header">
-        <span>{lang}</span>
-        <button onClick={copy} className="doc-code-copy">
-          {copied ? <Check size={13} /> : <Copy size={13} />}
-          {copied ? 'Copied' : 'Copy'}
+    <div className="relative group rounded-xl overflow-hidden my-6 border border-[var(--terminal-bg)] bg-[var(--terminal-bg)] shadow-xl">
+      <div className="flex items-center justify-between px-4 py-2 bg-[var(--terminal-surface)] border-b border-[var(--terminal-dim)] text-xs text-[var(--terminal-text)] font-mono">
+        <span className="flex items-center gap-2"><Code size={14} className="text-[var(--terminal-blue)]" /> {lang}</span>
+        <button 
+          onClick={copy} 
+          className="flex items-center gap-1.5 hover:text-white transition-colors p-1 rounded-md hover:bg-[var(--terminal-dim)]"
+        >
+          {copied ? <Check size={14} className="text-[var(--terminal-green)]" /> : <Copy size={14} />}
+          {copied ? 'Copied!' : 'Copy'}
         </button>
       </div>
-      <pre><code>{code}</code></pre>
+      <div className="p-4 overflow-x-auto text-sm font-mono text-[var(--terminal-text)] leading-relaxed bg-[var(--terminal-bg)]">
+        <pre><code>{code}</code></pre>
+      </div>
     </div>
-  )
+  );
 }
 
 export default function Docs() {
-  const [activeSection, setActiveSection] = useState('quickstart')
+  const [activeSection, setActiveSection] = useState('quickstart');
 
   return (
-    <div className="doc-page">
-      {/* Sidebar */}
-      <aside className="doc-sidebar">
-        <div className="doc-sidebar-title">
-          <BookOpen size={16} /> Documentation
+    <div className="min-h-screen bg-[var(--bg-0)] text-[var(--ink-0)] flex">
+      {/* Sidebar Navigation */}
+      <aside className="w-72 fixed h-[calc(100vh-6rem)] overflow-y-auto border-r border-[var(--nav-border)] bg-[var(--bg-1)] py-8 px-6 hidden md:block">
+        <div className="flex items-center gap-3 text-lg font-bold text-[var(--ink-0)] mb-8 px-2">
+          <BookOpen size={20} className="text-[var(--accent)]" /> 
+          Documentation
         </div>
-        <nav className="doc-sidebar-nav">
-          {SECTIONS.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => setActiveSection(s.id)}
-              className={`doc-nav-item ${activeSection === s.id ? 'active' : ''}`}
-            >
-              <s.icon size={15} />
-              <span>{s.label}</span>
-              <ChevronRight size={12} className="doc-nav-arrow" />
-            </button>
-          ))}
+        <nav className="space-y-1">
+          {SECTIONS.map((s) => {
+            const isActive = activeSection === s.id;
+            return (
+              <button
+                key={s.id}
+                onClick={() => setActiveSection(s.id)}
+                className={`w-full flex items-center justify-between px-4 py-3 rounded-xl transition-all duration-200 ${
+                  isActive 
+                    ? 'bg-[var(--accent-bg)] text-[var(--accent)] font-medium shadow-inner border border-[var(--accent-border)]' 
+                    : 'text-[var(--ink-2)] hover:text-[var(--ink-0)] hover:bg-[var(--bg-2)]'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <s.icon size={18} className={isActive ? 'text-[var(--accent)]' : 'text-[var(--ink-3)]'} />
+                  <span>{s.label}</span>
+                </div>
+                {isActive && <ChevronRight size={14} className="text-[var(--accent)]" />}
+              </button>
+            );
+          })}
         </nav>
       </aside>
 
-      {/* Content */}
-      <main className="doc-content">
+      {/* Main Content Area */}
+      <main className="flex-1 md:ml-72 max-w-4xl mx-auto px-6 md:px-12 py-8 pb-24">
+        
         {activeSection === 'quickstart' && (
-          <section>
-            <h1>Quick Start</h1>
-            <p className="doc-lead">
-              Get up and running with Synthra in under 5 minutes. Generate an API key,
-              install the SDK, and make your first paid AI request.
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-4xl font-extrabold text-[var(--ink-0)] mb-4 tracking-tight">Quick Start</h1>
+            <p className="text-lg text-[var(--ink-2)] mb-10 leading-relaxed">
+              Get up and running with Synthra in under 5 minutes. Use our API SDK to seamlessly consume premium AI and Marketplace APIs with autonomous Algorand payments.
             </p>
 
-            <h2>1. Connect Your Wallet</h2>
-            <p>
-              Navigate to <code>/api/keys</code> and connect your Pera Wallet.
-              Your wallet address serves as your identity on the platform.
-            </p>
+            <div className="space-y-12">
+              <div className="relative pl-8 border-l-2 border-[var(--nav-border)]">
+                <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-[var(--accent)] ring-4 ring-[var(--bg-0)]"></div>
+                <h2 className="text-2xl font-bold text-[var(--ink-0)] mb-3">1. Connect Your Wallet</h2>
+                <p className="text-[var(--ink-2)] leading-relaxed">
+                  Navigate to the <span className="text-[var(--accent)] bg-[var(--accent-bg)] px-2 py-0.5 rounded border border-[var(--accent-border)]">/api/keys</span> dashboard and connect your Pera or Defly Wallet. Your wallet address is your native identity on the platform.
+                </p>
+              </div>
 
-            <h2>2. Generate an API Key</h2>
-            <p>
-              Select a base model (GPT-4o, Claude, Gemini) and generate an API key.
-              Each key is scoped to a specific model.
-            </p>
+              <div className="relative pl-8 border-l-2 border-[var(--nav-border)]">
+                <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-[var(--accent)] ring-4 ring-[var(--bg-0)]"></div>
+                <h2 className="text-2xl font-bold text-[var(--ink-0)] mb-3">2. Install the SDK</h2>
+                <CodeBlock lang="bash" code="npm install synthra-x402 algosdk" />
+              </div>
 
-            <h2>3. Make Your First Request</h2>
-            <CodeBlock
-              lang="bash"
-              code={`curl -X POST ${API_BASE}/api/apikeys/chat \\
-  -H "Authorization: Bearer YOUR_API_KEY" \\
-  -H "Content-Type: application/json" \\
-  -d '{
-    "messages": [
-      {"role": "user", "content": "Hello from Synthra!"}
-    ]
-  }'`}
-            />
+              <div className="relative pl-8 border-l-2 border-transparent">
+                <div className="absolute -left-[9px] top-1 w-4 h-4 rounded-full bg-[var(--accent)] ring-4 ring-[var(--bg-0)]"></div>
+                <h2 className="text-2xl font-bold text-[var(--ink-0)] mb-3">3. Make a Request</h2>
+                <CodeBlock
+                  lang="typescript"
+                  code={`import { createSynthraClient } from 'synthra-x402/client';
 
-            <h2>4. Check Usage</h2>
-            <CodeBlock
-              lang="bash"
-              code={`curl ${API_BASE}/api/apikeys/stats?key=YOUR_API_KEY`}
-            />
+const client = createSynthraClient({
+  network: 'testnet',
+  payTo: 'ENDPOINT_CREATOR_WALLET',
+  priceUsdc: 0.10,
+  signer: myWalletSigner // Use @txnlab/use-wallet for browsers
+});
 
-            <div className="doc-callout">
-              <Zap size={16} />
-              <div>
-                <strong>Pay-per-use billing</strong>
-                <p>Each request costs a small amount of ALGO. Funds are settled on Algorand with sub-second finality.</p>
+const response = await client.fetch('https://api.synthra.io/premium');
+console.log(await response.json());`}
+                />
               </div>
             </div>
-          </section>
-        )}
 
-        {activeSection === 'installation' && (
-          <section>
-            <h1>SDK Installation</h1>
-            <p className="doc-lead">
-              Install the Synthra SDK to integrate AI endpoints into your application.
-            </p>
-
-            <h2>JavaScript / TypeScript</h2>
-            <CodeBlock lang="bash" code="npm install @synthra/sdk" />
-
-            <h3>Usage</h3>
-            <CodeBlock
-              lang="typescript"
-              code={`import { SynthraClient } from '@synthra/sdk'
-
-const client = new SynthraClient({
-  apiKey: process.env.SYNTHRA_API_KEY,
-  network: 'mainnet', // or 'testnet'
-})
-
-// Chat completions (OpenAI-compatible)
-const response = await client.chat.completions.create({
-  model: 'gpt-4o',
-  messages: [
-    { role: 'user', content: 'Explain Algorand consensus' }
-  ],
-})
-
-console.log(response.choices[0].message.content)`}
-            />
-
-            <h2>Python</h2>
-            <CodeBlock lang="bash" code="pip install synthra" />
-
-            <h3>Usage</h3>
-            <CodeBlock
-              lang="python"
-              code={`from synthra import SynthraClient
-
-client = SynthraClient(api_key="YOUR_API_KEY")
-
-response = client.chat.completions.create(
-    model="gpt-4o",
-    messages=[
-        {"role": "user", "content": "Explain Algorand consensus"}
-    ],
-)
-
-print(response.choices[0].message.content)`}
-            />
-
-            <div className="doc-callout info">
-              <Shield size={16} />
-              <div>
-                <strong>Security Note</strong>
-                <p>Never commit your API key to version control. Use environment variables instead.</p>
+            <div className="mt-12 bg-[var(--bg-1)] border border-[var(--card-border)] rounded-2xl p-6 flex items-start gap-4 shadow-sm">
+              <div className="bg-[var(--accent-bg)] p-3 rounded-full mt-1 border border-[var(--accent-border)]">
+                <Zap size={20} className="text-[var(--accent)]" />
               </div>
-            </div>
-          </section>
-        )}
-
-        {activeSection === 'authentication' && (
-          <section>
-            <h1>Authentication</h1>
-            <p className="doc-lead">
-              Synthra uses the L402 payment protocol for authentication and billing.
-              Here's how it works under the hood.
-            </p>
-
-            <h2>How L402 Works</h2>
-            <ol className="doc-steps">
-              <li>
-                <strong>Request</strong> &mdash; Client sends an API request with an API key
-              </li>
-              <li>
-                <strong>402 Response</strong> &mdash; Server returns a payment invoice (amount in ALGO)
-              </li>
-              <li>
-                <strong>Payment</strong> &mdash; Client pays the invoice on Algorand
-              </li>
-              <li>
-                <strong>Proof</strong> &mdash; Client includes the transaction proof in a retry
-              </li>
-              <li>
-                <strong>Response</strong> &mdash; Server verifies payment and returns the AI response
-              </li>
-            </ol>
-
-            <h2>Bearer Token Auth</h2>
-            <p>For simplified access, use your API key as a Bearer token:</p>
-            <CodeBlock
-              lang="bash"
-              code={`curl -H "Authorization: Bearer YOUR_API_KEY" \\
-  ${API_BASE}/api/apikeys/chat`}
-            />
-
-            <h2>LogicSig Sessions</h2>
-            <p>
-              For high-frequency use, Synthra supports LogicSig delegated sessions.
-              These reduce repeated wallet prompts while keeping every payment verifiable on-chain.
-            </p>
-
-            <div className="doc-callout">
-              <Shield size={16} />
               <div>
-                <strong>Wallet-Native Identity</strong>
-                <p>Your Algorand wallet address is your identity. No usernames, no passwords, no accounts to manage.</p>
-              </div>
-            </div>
-          </section>
-        )}
-
-        {activeSection === 'api-reference' && (
-          <section>
-            <h1>API Reference</h1>
-            <p className="doc-lead">
-              Complete reference for Synthra's REST API endpoints.
-            </p>
-
-            <h2>Base URL</h2>
-            <CodeBlock lang="text" code={API_BASE} />
-
-            <h2>Chat Completions</h2>
-            <div className="doc-endpoint">
-              <span className="doc-method post">POST</span>
-              <code>/api/apikeys/chat</code>
-            </div>
-            <p>OpenAI-compatible chat completions endpoint.</p>
-
-            <h3>Request Body</h3>
-            <CodeBlock
-              lang="json"
-              code={`{
-  "messages": [
-    {"role": "system", "content": "You are a helpful assistant"},
-    {"role": "user", "content": "Hello!"}
-  ],
-  "temperature": 0.7,
-  "max_tokens": 1024
-}`}
-            />
-
-            <h3>Response</h3>
-            <CodeBlock
-              lang="json"
-              code={`{
-  "choices": [
-    {
-      "message": {
-        "role": "assistant",
-        "content": "Hello! How can I help you today?"
-      }
-    }
-  ],
-  "usage": {
-    "prompt_tokens": 12,
-    "completion_tokens": 8,
-    "total_tokens": 20,
-    "cost_algo": 0.001
-  }
-}`}
-            />
-
-            <h2>Simple Prompt</h2>
-            <div className="doc-endpoint">
-              <span className="doc-method post">POST</span>
-              <code>/api/apikeys/hit</code>
-            </div>
-            <CodeBlock
-              lang="json"
-              code={`{
-  "prompt": "What is the capital of France?"
-}`}
-            />
-
-            <h2>Usage Stats</h2>
-            <div className="doc-endpoint">
-              <span className="doc-method get">GET</span>
-              <code>/api/apikeys/stats?key=YOUR_API_KEY</code>
-            </div>
-          </section>
-        )}
-
-        {activeSection === 'api-keys' && (
-          <section>
-            <h1>API Keys</h1>
-            <p className="doc-lead">
-              Each API key is scoped to a specific model and tied to your wallet address.
-            </p>
-
-            <h2>Generating a Key</h2>
-            <ol className="doc-steps">
-              <li>Navigate to <code>/api/keys</code></li>
-              <li>Connect your Pera Wallet</li>
-              <li>Select a model from the dropdown</li>
-              <li>Click "Generate New API Key"</li>
-            </ol>
-
-            <h2>Key Properties</h2>
-            <div className="doc-table-wrap">
-              <table className="doc-table">
-                <thead>
-                  <tr><th>Property</th><th>Description</th></tr>
-                </thead>
-                <tbody>
-                  <tr><td>Scope</td><td>Each key is bound to one model</td></tr>
-                  <tr><td>Billing</td><td>Usage is billed per request in ALGO</td></tr>
-                  <tr><td>Revocation</td><td>You can revoke and regenerate keys at any time</td></tr>
-                  <tr><td>Limits</td><td>No hard rate limits — pay as you go</td></tr>
-                </tbody>
-              </table>
-            </div>
-
-            <h2>Environment Variable</h2>
-            <CodeBlock lang="bash" code='export SYNTHRA_API_KEY="your_key_here"' />
-          </section>
-        )}
-
-        {activeSection === 'agents' && (
-          <section>
-            <h1>For Autonomous Agents</h1>
-            <p className="doc-lead">
-              Synthra is designed for both human developers and autonomous AI agents.
-              Here's how to integrate agent-to-agent API calls.
-            </p>
-
-            <h2>Agent Flow</h2>
-            <ol className="doc-steps">
-              <li>Your agent generates an API key via wallet signature</li>
-              <li>Agent sends requests to Synthra endpoints</li>
-              <li>L402 payment settles automatically via pre-funded wallet</li>
-              <li>Agent receives AI responses for downstream tasks</li>
-            </ol>
-
-            <h2>Example: Agent-to-Agent Call</h2>
-            <CodeBlock
-              lang="typescript"
-              code={`import { SynthraClient } from '@synthra/sdk'
-
-const agent = new SynthraClient({
-  apiKey: process.env.SYNTHRA_API_KEY,
-  autoPayment: true, // Automatically handle L402 payments
-})
-
-// Autonomous agent calling another AI agent
-const analysis = await agent.chat.completions.create({
-  model: 'sc-auditor-alice', // Community agent
-  messages: [
-    {
-      role: 'user',
-      content: 'Audit this TEAL contract: ' + contractSource
-    }
-  ],
-})
-
-// Use the result in your pipeline
-processAuditResults(analysis.choices[0].message.content)`}
-            />
-
-            <div className="doc-callout">
-              <Zap size={16} />
-              <div>
-                <strong>API Marketplace (Coming Soon)</strong>
-                <p>
-                  The full API marketplace with SDK-based publishing will let agents discover
-                  and consume services autonomously. Join the waitlist at <code>/api</code>.
+                <h3 className="text-[var(--ink-0)] font-bold text-lg mb-1">Pay-per-use L402 Billing</h3>
+                <p className="text-[var(--ink-2)] leading-relaxed">
+                  The SDK automatically handles purchasing a "Macaroon" token via your wallet on the first request. Subsequent requests automatically decrement your token balance off-chain with zero latency.
                 </p>
               </div>
             </div>
-          </section>
+          </div>
         )}
+
+        {activeSection === 'marketplace' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-4xl font-extrabold text-[var(--ink-0)] mb-4 tracking-tight">API Marketplace</h1>
+            <p className="text-lg text-[var(--ink-2)] mb-10 leading-relaxed">
+              Synthra's API Marketplace allows human developers and autonomous AI agents to consume premium APIs using prepaid USDC tokens via the x402 protocol.
+            </p>
+
+            <h2 className="text-2xl font-bold text-[var(--ink-0)] mt-12 mb-4 border-b border-[var(--nav-border)] pb-2">For Human Developers (Browser)</h2>
+            <p className="text-[var(--ink-2)] mb-6">If you are building a web UI, the SDK integrates seamlessly with your wallet provider to prompt the user for payment approval.</p>
+            <CodeBlock
+              lang="typescript"
+              code={`import { createSynthraClient } from 'synthra-x402/client'
+import { useWallet } from '@txnlab/use-wallet'
+
+const { activeAccount, signTransactions } = useWallet();
+
+const client = createSynthraClient({
+  network: 'testnet',
+  payTo: 'MARKETPLACE_ENDPOINT_WALLET',
+  priceUsdc: 0.50,
+  signer: {
+    address: activeAccount.address,
+    signTransactions: async (txns, idx) => signTransactions(txns, idx)
+  }
+})
+
+// The SDK handles the 402 payment flow automatically!
+const response = await client.fetch('https://oracle.synthra.io/prices')
+const data = await response.json()`}
+            />
+
+            <h2 className="text-2xl font-bold text-[var(--ink-0)] mt-12 mb-4 border-b border-[var(--nav-border)] pb-2">For Autonomous Agents (Node.js)</h2>
+            <p className="text-[var(--ink-2)] mb-6">
+              AI Agents can consume APIs entirely autonomously without human intervention by signing the USDC payment with their own private key.
+            </p>
+            <CodeBlock
+              lang="typescript"
+              code={`import { createSynthraClient } from 'synthra-x402/client'
+import algosdk from 'algosdk'
+
+const secretKey = Buffer.from(process.env.AGENT_PRIVATE_KEY, "base64");
+const address = algosdk.encodeAddress(secretKey.slice(32));
+
+const agentClient = createSynthraClient({
+  network: 'testnet',
+  payTo: 'MARKETPLACE_ENDPOINT_WALLET',
+  priceUsdc: 0.50,
+  signer: {
+    address,
+    signTransactions: async (txns, idx) => {
+      // Agent autonomously signs the payment!
+      return txns.map((t) => algosdk.signTransaction(algosdk.decodeUnsignedTransaction(t), secretKey).blob);
+    }
+  }
+})
+
+const response = await agentClient.fetch('https://oracle.synthra.io/prices')`}
+            />
+
+            <div className="mt-12 bg-[var(--bg-1)] border border-[var(--card-border)] rounded-2xl p-6 flex items-start gap-4">
+              <Globe size={24} className="text-[var(--gradient-mid)] shrink-0 mt-1" />
+              <div>
+                <h3 className="text-[var(--ink-0)] font-bold text-lg mb-1">Publishing your own API</h3>
+                <p className="text-[var(--ink-2)] leading-relaxed mb-4">
+                  You can easily protect and monetize your own Express.js endpoints using our Server SDK.
+                </p>
+                <CodeBlock lang="typescript" code={`import { synthraApiAuth } from 'synthra-x402/server';
+import express from 'express';
+
+const app = express();
+app.use('/api/premium', synthraApiAuth({
+  network: 'testnet',
+  priceUsdc: 0.25,
+  payTo: 'YOUR_WALLET_ADDRESS'
+}));`} />
+              </div>
+            </div>
+          </div>
+        )}
+
+        {activeSection === 'installation' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-4xl font-extrabold text-[var(--ink-0)] mb-4 tracking-tight">SDK Installation</h1>
+            <p className="text-lg text-[var(--ink-2)] mb-10 leading-relaxed">
+              The official <code className="bg-[var(--bg-2)] px-1.5 py-0.5 rounded text-[var(--ink-1)]">synthra-x402</code> SDK is available on npm. It works in both Browser and Node.js environments.
+            </p>
+            <CodeBlock lang="bash" code="npm install synthra-x402" />
+            <h2 className="text-2xl font-bold text-[var(--ink-0)] mt-12 mb-4 border-b border-[var(--nav-border)] pb-2">Requirements</h2>
+            <ul className="list-disc pl-6 text-[var(--ink-2)] space-y-2">
+              <li>Node.js 18 or higher (if running on server)</li>
+              <li>An Algorand wallet provider (if running in browser)</li>
+              <li>The <code className="bg-[var(--bg-2)] px-1.5 py-0.5 rounded text-[var(--ink-1)]">algosdk</code> package for transaction signing</li>
+            </ul>
+          </div>
+        )}
+
+        {activeSection === 'authentication' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-4xl font-extrabold text-[var(--ink-0)] mb-4 tracking-tight">Authentication (x402)</h1>
+            <p className="text-lg text-[var(--ink-2)] mb-10 leading-relaxed">
+              Synthra does not use traditional API keys for marketplace endpoints. Instead, it uses the <strong>x402-avm</strong> protocol, which is an Algorand-native implementation of L402.
+            </p>
+            <div className="bg-[var(--bg-1)] border border-[var(--card-border)] rounded-2xl p-6 mb-8">
+              <h3 className="text-[var(--ink-0)] font-bold text-lg mb-2">How it Works</h3>
+              <ol className="list-decimal pl-5 text-[var(--ink-2)] space-y-3">
+                <li>Your client makes a request to a protected endpoint.</li>
+                <li>The server intercepts it and returns a <code className="bg-[var(--bg-2)] px-1.5 py-0.5 rounded text-[var(--ink-1)]">402 Payment Required</code> status along with an invoice and an incomplete Macaroon.</li>
+                <li>The SDK automatically prompts your wallet (or uses your agent's private key) to sign a USDC payment transaction on Algorand.</li>
+                <li>The transaction is broadcasted to the network.</li>
+                <li>The server verifies the payment, completes the Macaroon, and fulfills the original request.</li>
+              </ol>
+            </div>
+            <p className="text-[var(--ink-2)]">
+              The beauty of this is that the <code className="bg-[var(--bg-2)] px-1.5 py-0.5 rounded text-[var(--ink-1)]">synthra-x402/client</code> SDK handles this entire negotiation under the hood. You simply call <code className="bg-[var(--bg-2)] px-1.5 py-0.5 rounded text-[var(--ink-1)]">client.fetch()</code> and wait for your data!
+            </p>
+          </div>
+        )}
+
+        {activeSection === 'api-keys' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-4xl font-extrabold text-[var(--ink-0)] mb-4 tracking-tight">Base Model API Keys</h1>
+            <p className="text-lg text-[var(--ink-2)] mb-10 leading-relaxed">
+              While marketplace endpoints use x402 Macaroons, our core Base Models (e.g., Llama 3, GPT-4 proxies) use traditional API Keys that are tied to your wallet address.
+            </p>
+            <div className="bg-[var(--accent-bg)] border border-[var(--accent-border)] rounded-2xl p-6 mb-8 shadow-sm">
+              <h3 className="text-[var(--ink-0)] font-bold text-lg mb-2">Generating Keys</h3>
+              <p className="text-[var(--ink-2)]">
+                You can generate API keys by navigating to the <strong>API Keys</strong> tab in the navigation bar. You must sign a message with your wallet to authenticate.
+              </p>
+            </div>
+            <h2 className="text-2xl font-bold text-[var(--ink-0)] mt-12 mb-4 border-b border-[var(--nav-border)] pb-2">Usage</h2>
+            <CodeBlock lang="bash" code={`curl -X POST https://api.synthra.io/v1/chat/completions \\
+  -H "Authorization: Bearer sk_your_api_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "gpt-4o",
+    "messages": [{"role": "user", "content": "Hello!"}]
+  }'`} />
+          </div>
+        )}
+
+        {activeSection === 'api-reference' && (
+          <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
+            <h1 className="text-4xl font-extrabold text-[var(--ink-0)] mb-4 tracking-tight">REST API Reference</h1>
+            <p className="text-lg text-[var(--ink-2)] mb-10 leading-relaxed">
+              The API Marketplace backend is fully accessible via REST for clients who prefer not to use the SDK.
+            </p>
+            <h3 className="text-xl font-bold text-[var(--ink-0)] mb-3">GET /api/marketplace/catalog</h3>
+            <p className="text-[var(--ink-2)] mb-6">Returns a list of all active marketplace endpoints.</p>
+            <CodeBlock lang="json" code={`[
+  {
+    "id": "uuid",
+    "name": "DeFi Oracle",
+    "target_url": "https://oracle.synthra.io/prices",
+    "price_usdc": 0.05
+  }
+]`} />
+          </div>
+        )}
+
       </main>
     </div>
-  )
+  );
 }
