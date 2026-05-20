@@ -23,7 +23,8 @@ export default function ApiDashboard() {
       return
     }
 
-    fetch(`http://localhost:8080/api/marketplace/metrics/${address}`)
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+    fetch(`${backendUrl}/api/marketplace/metrics/${address}`)
       .then(res => {
         if (!res.ok) throw new Error('Failed to load metrics')
         return res.json()

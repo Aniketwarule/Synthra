@@ -28,7 +28,8 @@ export default function DeployApi() {
     setError('')
 
     try {
-      const response = await fetch('http://localhost:8080/api/marketplace/deploy', {
+      const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+      const response = await fetch(`${backendUrl}/api/marketplace/deploy`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

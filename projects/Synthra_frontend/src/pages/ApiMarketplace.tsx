@@ -7,7 +7,8 @@ export default function ApiMarketplace() {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    fetch('http://localhost:8080/api/marketplace/catalog')
+    const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:8080';
+    fetch(`${backendUrl}/api/marketplace/catalog`)
       .then(res => res.json())
       .then(data => {
         setCatalog(data)
