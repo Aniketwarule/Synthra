@@ -25,7 +25,7 @@ interface AgentFormState {
   baseModel: string
   systemPrompt: string
   endpointUrl: string
-  priceAlgo: number
+  priceUsdc: number
   APIkey: string
 }
 
@@ -50,7 +50,7 @@ const INITIAL_FORM: AgentFormState = {
   baseModel: '',
   systemPrompt: '',
   endpointUrl: '',
-  priceAlgo: 0.1,
+  priceUsdc: 0.10,
   APIkey: '',
 }
 
@@ -118,7 +118,7 @@ export default function Publish() {
   const isFormValid =
     form.name.trim().length > 0 &&
     form.description.trim().length > 0 &&
-    form.priceAlgo > 0 &&
+    form.priceUsdc > 0 &&
     (form.hostingType === 'internal'
       ? form.baseModel.length > 0 && form.systemPrompt.trim().length > 0
       : form.endpointUrl.trim().length > 0)
@@ -303,18 +303,18 @@ export default function Publish() {
 
           {/* Price */}
           <div className="pub-field">
-            <label><span>Price per Request (ALGO)</span></label>
+            <label><span>Price per Request (USDC)</span></label>
             <div className="pub-price-row">
               <input
                 type="number"
-                value={form.priceAlgo}
-                onChange={(e) => updateField('priceAlgo', Math.max(0, parseFloat(e.target.value) || 0))}
-                step={0.1}
+                value={form.priceUsdc}
+                onChange={(e) => updateField('priceUsdc', Math.max(0, parseFloat(e.target.value) || 0))}
+                step={0.01}
                 min={0.01}
                 className="pub-price-input"
               />
               <span className="pub-price-label">
-                Users pay <strong>{form.priceAlgo}</strong> ALGO per prompt
+                Users pay <strong>${form.priceUsdc}</strong> USDC per prompt
               </span>
             </div>
           </div>
@@ -342,7 +342,7 @@ export default function Publish() {
               ) : (
                 <p>&gt; endpoint: <strong>{form.endpointUrl}</strong></p>
               )}
-              <p>&gt; price: <strong className="pub-preview-price">{form.priceAlgo} ALGO</strong></p>
+              <p>&gt; price: <strong className="pub-preview-price">${form.priceUsdc} USDC</strong></p>
               <p>&gt; creator: <strong className="pub-preview-price">{ellipseAddress(address, 6)}</strong></p>
             </div>
           )}
